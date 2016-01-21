@@ -2,7 +2,7 @@
 
 namespace TinyJSON
 {
-    [Obsolete("Load has been renamed to AfterDecode please use attribute instead.")]
+    [Obsolete("Load has been renamed to AfterDecode please use attribute instead.", error:true)]
     public sealed class Load : AfterDecodeAttribute
     {
 

@@ -2,7 +2,7 @@
 
 namespace TinyJSON
 {
-    [Obsolete("Skip has been renamed to Exclude please use that attribute instead.")]
+    [Obsolete("Skip has been renamed to Exclude please use that attribute instead.", error:true)]
     public sealed class Skip : ExcludeAttribute
     {
     }
