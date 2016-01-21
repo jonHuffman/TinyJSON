@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -31,9 +31,16 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\AliasAttribute.cs" />
+    <Compile Include="Attributes\TypeHintAttribute.cs" />
+    <Compile Include="Attributes\BeforeEncodeAttribute.cs" />
+    <Compile Include="Attributes\ExcludeAttribute.cs" />
+    <Compile Include="Attributes\AfterDecodeAttribute.cs" />
+    <Compile Include="Attributes\IncludeAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Decoder.cs" />
     <Compile Include="Encoder.cs" />
+    <Compile Include="Exceptions.cs" />
     <Compile Include="Types\Variant.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Types\ProxyArray.cs" />
@@ -45,7 +52,5 @@
     <Compile Include="EncodeOptions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Folder Include="Types\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>

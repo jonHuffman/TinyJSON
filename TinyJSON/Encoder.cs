@@ -11,6 +11,7 @@ namespace TinyJSON
         static readonly Type includeAttrType = typeof(IncludeAttribute);
         static readonly Type excludeAttrType = typeof(ExcludeAttribute);
         static readonly Type typeHintAttrType = typeof(TypeHintAttribute);
+        
 
         StringBuilder builder;
         EncodeOptions options;
@@ -61,6 +62,15 @@ namespace TinyJSON
             get
             {
                 return ((options & EncodeOptions.IgnoreAttributes) == EncodeOptions.IgnoreAttributes);
+            }
+        }
+
+
+        bool encodePrivateVariables
+        {
+            get
+            {
+                return ((options & EncodeOptions.EncodePrivateVariables) == EncodeOptions.EncodePrivateVariables);
             }
         }
 
@@ -120,13 +130,13 @@ namespace TinyJSON
 
         void EncodeObject(object value, bool forceTypeHint)
         {
-            var type = value.GetType();
+            Type type = value.GetType();
 
             AppendOpenBrace();
 
             forceTypeHint = forceTypeHint || typeHintsEnabled;
 
-            var firstItem = !forceTypeHint;
+            bool firstItem = !forceTypeHint;
             if (forceTypeHint)
             {
                 if (prettyPrintEnabled)
@@ -139,29 +149,46 @@ namespace TinyJSON
                 firstItem = false;
             }
 
-            var fields = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-            foreach (var field in fields)
-            {
-                var shouldTypeHint = false;
-                var shouldEncode = field.IsPublic;
+            #region -= Fields =-
+            bool shouldTypeHint = false;
+            bool shouldEncode = false;
 
-                if (!ignoreAttributes)
+            FieldInfo[] fields = type.GetFields(JSON.INSTANCE_BINDING_FLAGS);
+
+            for (int i = 0; i < fields.Length; i++)
+            {
+                shouldTypeHint = false;
+                shouldEncode = fields[i].IsPublic || encodePrivateVariables;
+                string fieldName = fields[i].Name;
+
+                if (ignoreAttributes)
                 {
-                    foreach (var attribute in field.GetCustomAttributes(true))
+                    Attribute[] attributes = Attribute.GetCustomAttributes(fields[i]);
+                    for (int x = 0; x < attributes.Length; x++)
                     {
-                        if (excludeAttrType.IsAssignableFrom(attribute.GetType()))
+                        if (attributes[x] is ExcludeAttribute)
                         {
                             shouldEncode = false;
+                            break;
                         }
 
-                        if (includeAttrType.IsAssignableFrom(attribute.GetType()))
+                        if (attributes[x] is IncludeAttribute)
                         {
                             shouldEncode = true;
+                            continue;
                         }
 
-                        if (typeHintAttrType.IsAssignableFrom(attribute.GetType()))
+                        if (attributes[x] is AliasAttribute)
+                        {
+                            fieldName = ((AliasAttribute)attributes[x]).alias;
+                            continue;
+                        }
+
+
+                        if (attributes[x] is TypeHintAttribute)
                         {
                             shouldTypeHint = true;
+                            continue;
                         }
                     }
                 }
@@ -169,47 +196,72 @@ namespace TinyJSON
                 if (shouldEncode)
                 {
                     AppendComma(firstItem);
-                    EncodeString(field.Name);
+                    EncodeString(fieldName);
                     AppendColon();
-                    EncodeValue(field.GetValue(value), shouldTypeHint);
+                    EncodeValue(fields[i].GetValue(value), shouldTypeHint);
                     firstItem = false;
                 }
             }
 
+            #endregion
+
+            #region -= Properties 
             // Properties can only be include with Attributes so we can skip them if Attributes are ignored
             if (!ignoreAttributes)
             {
-                var properties = type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-                foreach (var property in properties)
+                PropertyInfo[] properties = type.GetProperties(JSON.INSTANCE_BINDING_FLAGS);
+
+                for (int i = 0; i < properties.Length; i++)
                 {
-                    if (property.CanRead)
+                    if (properties[i].CanRead)
                     {
-                        var shouldTypeHint = false;
-                        var shouldEncode = false;
-                        foreach (var attribute in property.GetCustomAttributes(true))
+                        shouldEncode = false;
+                        shouldTypeHint = false;
+                        string propertyName = properties[i].Name;
+
+                        Attribute[] attributes = Attribute.GetCustomAttributes(properties[i], inherit: true);
+
+                        for (int x = 0; x < attributes.Length; x++)
                         {
-                            if (includeAttrType.IsAssignableFrom(attribute.GetType()))
+                            if (attributes[x] is ExcludeAttribute)
                             {
-                                shouldEncode = true;
+                                shouldEncode = false;
+                                break;
                             }
 
-                            if (typeHintAttrType.IsAssignableFrom(attribute.GetType()))
+                            if (attributes[x] is IncludeAttribute)
+                            {
+                                shouldEncode = true;
+                                continue;
+                            }
+
+                            if (attributes[x] is AliasAttribute)
+                            {
+                                propertyName = ((AliasAttribute)attributes[x]).alias;
+                                continue;
+                            }
+
+                            if (attributes[x] is TypeHintAttribute)
                             {
                                 shouldTypeHint = true;
+                                continue;
                             }
                         }
+
 
                         if (shouldEncode)
                         {
                             AppendComma(firstItem);
-                            EncodeString(property.Name);
+                            EncodeString(propertyName);
                             AppendColon();
-                            EncodeValue(property.GetValue(value, null), shouldTypeHint);
+                            EncodeValue(properties[i].GetValue(value, null), shouldTypeHint);
                             firstItem = false;
                         }
                     }
+
                 }
             }
+            #endregion 
 
             AppendCloseBrace();
         }
