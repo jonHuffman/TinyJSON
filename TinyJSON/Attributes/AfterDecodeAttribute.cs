@@ -10,7 +10,8 @@ namespace TinyJSON
 
 
     /// <summary>
-    /// Mark methods to be called after an object is decoded.
+    /// Mark methods to be called after an object is decoded. This function can take no arguments or
+    /// take a object that is assignable from <see cref="Variant"/>.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
     public class AfterDecodeAttribute : Attribute

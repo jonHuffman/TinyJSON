@@ -199,8 +199,10 @@ namespace TinyJSON
 
                 MemberTypes memberType = members[i].MemberType;
 
+                Console.WriteLine("Member: " + members[i].Name);
                 if (memberType != MemberTypes.Property && memberType != MemberTypes.Field)
                 {
+                    Console.WriteLine("Skipping");
                     //Not a field or property we skip it. 
                     continue;
                 }
@@ -255,7 +257,17 @@ namespace TinyJSON
                         {
                             //We are going to encode this field
                             MakeMethod = decodeTypeMethod.MakeGenericMethod(new Type[] { fieldInfo.FieldType });
-                            fieldInfo.SetValue(instance, MakeMethod.Invoke(obj: null, parameters: new object[] { proxyObject[memberName] }));
+
+                            if (type.IsValueType)
+                            {
+                                object instanceRef = (object)instance;
+                                fieldInfo.SetValue(instanceRef, MakeMethod.Invoke(obj: null, parameters: new object[] { proxyObject[memberName] }));
+                                instance = (T)instanceRef;
+                            }
+                            else
+                            {
+                                fieldInfo.SetValue(instance, MakeMethod.Invoke(null, new object[] { proxyObject[memberName] }));
+                            }
 
                         }
                     }
@@ -267,11 +279,40 @@ namespace TinyJSON
                         {
                             //We are going to encode this property
                             MakeMethod = decodeTypeMethod.MakeGenericMethod(new Type[] { propertyInfo.PropertyType });
-                            propertyInfo.SetValue(instance, MakeMethod.Invoke(obj: null, parameters: new object[] { proxyObject[memberName] }));
+
+                            if (type.IsValueType)
+                            {
+                                object instanceRef = (object)instance;
+                                propertyInfo.SetValue(instanceRef, MakeMethod.Invoke(obj: null, parameters: new object[] { proxyObject[memberName] }));
+                                instance = (T)instanceRef;
+                            }
+                            else
+                            {
+                                propertyInfo.SetValue(instance, MakeMethod.Invoke(obj: null, parameters: new object[] { proxyObject[memberName] }));
+                            }
+
+
                         }
                     }
                 }
             }
+
+            // Invoke methods tagged with [AfterDecode] attribute. 
+            foreach (var method in type.GetMethods(instanceBindingFlags))
+            {
+                if (method.GetCustomAttributes(false).AnyOfType(typeof(AfterDecodeAttribute)))
+                {
+                    if (method.GetParameters().Length == 0)
+                    {
+                        method.Invoke(instance, null);
+                    }
+                    else
+                    {
+                        method.Invoke(instance, new object[] { data });
+                    }
+                }
+            }
+
             return instance;
         }
 

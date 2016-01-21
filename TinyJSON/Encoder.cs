@@ -11,7 +11,7 @@ namespace TinyJSON
         static readonly Type includeAttrType = typeof(IncludeAttribute);
         static readonly Type excludeAttrType = typeof(ExcludeAttribute);
         static readonly Type typeHintAttrType = typeof(TypeHintAttribute);
-        
+
 
         StringBuilder builder;
         EncodeOptions options;
@@ -161,13 +161,16 @@ namespace TinyJSON
                 shouldEncode = fields[i].IsPublic || encodePrivateVariables;
                 string fieldName = fields[i].Name;
 
-                if (ignoreAttributes)
+
+                if (!ignoreAttributes)
                 {
-                    Attribute[] attributes = Attribute.GetCustomAttributes(fields[i]);
+                    Attribute[] attributes = Attribute.GetCustomAttributes(fields[i], inherit: true);
+
                     for (int x = 0; x < attributes.Length; x++)
                     {
                         if (attributes[x] is ExcludeAttribute)
                         {
+
                             shouldEncode = false;
                             break;
                         }
@@ -455,7 +458,7 @@ namespace TinyJSON
 
             if (prettyPrintEnabled)
             {
-                builder.Append('\n');
+                builder.Append(Environment.NewLine);
                 indent++;
             }
         }
@@ -465,7 +468,7 @@ namespace TinyJSON
         {
             if (prettyPrintEnabled)
             {
-                builder.Append('\n');
+                builder.Append(Environment.NewLine);
                 indent--;
                 AppendIndent();
             }
@@ -480,7 +483,7 @@ namespace TinyJSON
 
             if (prettyPrintEnabled)
             {
-                builder.Append('\n');
+                builder.Append(Environment.NewLine);
                 indent++;
             }
         }
@@ -490,7 +493,7 @@ namespace TinyJSON
         {
             if (prettyPrintEnabled)
             {
-                builder.Append('\n');
+                builder.Append(Environment.NewLine);
                 indent--;
                 AppendIndent();
             }
@@ -507,7 +510,7 @@ namespace TinyJSON
 
                 if (prettyPrintEnabled)
                 {
-                    builder.Append('\n');
+                    builder.Append(Environment.NewLine);
                 }
             }
 
