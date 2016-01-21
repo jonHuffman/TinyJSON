@@ -7,63 +7,21 @@ using System.Linq;
 
 namespace TinyJSON
 {
-	/// <summary>
-	/// Mark members that should be included. 
-	/// Public fields are included by default.
-	/// </summary>
-	[AttributeUsage( AttributeTargets.Field | AttributeTargets.Property )]
-	public sealed class Include : Attribute
-	{
-	}
 
 
-	/// <summary>
-	/// Mark members that should be excluded.
-	/// Private fields and all properties are excluded by default.
-	/// </summary>
-	[AttributeUsage( AttributeTargets.Field | AttributeTargets.Property )]
-	public class Exclude : Attribute
-	{
-	}
 
 
-	/// <summary>
-	/// Mark methods to be called after an object is decoded.
-	/// </summary>
-	[AttributeUsage( AttributeTargets.Method )]
-	public class AfterDecode : Attribute
-	{
-	}
 
 
-	/// <summary>
-	/// Mark methods to be called before an object is encoded.
-	/// </summary>
-	[AttributeUsage( AttributeTargets.Method )]
-	public class BeforeEncode : Attribute
-	{
-	}
 
 
-	/// <summary>
-	/// Mark members to force type hinting even when EncodeOptions.NoTypeHints is set.
-	/// </summary>
-	[AttributeUsage( AttributeTargets.Field | AttributeTargets.Property )]
-	public class TypeHint : Attribute
-	{
-	}
 
 
-	[Obsolete( "Use the Exclude attribute instead." )]
-	public sealed class Skip : Exclude
-	{
-	}
 
 
-	[Obsolete( "Use the AfterDecode attribute instead." )]
-	public sealed class Load : AfterDecode
-	{
-	}
+
+
+
 
 
 	public sealed class DecodeException : Exception
@@ -83,8 +41,8 @@ namespace TinyJSON
 
 	public static class JSON
 	{
-		static readonly Type includeAttrType = typeof(Include);
-		static readonly Type excludeAttrType = typeof(Exclude);
+		static readonly Type includeAttrType = typeof(IncludeAttribute);
+		static readonly Type excludeAttrType = typeof(ExcludeAttribute);
 
 
 		public static Variant Load( string json )
@@ -114,7 +72,7 @@ namespace TinyJSON
 				{
 					foreach (var method in type.GetMethods( instanceBindingFlags ))
 					{
-						if (method.GetCustomAttributes( false ).AnyOfType( typeof(BeforeEncode) ))
+						if (method.GetCustomAttributes( false ).AnyOfType( typeof(BeforeEncodeAttribute) ))
 						{
 							if (method.GetParameters().Length == 0)
 							{
@@ -327,7 +285,7 @@ namespace TinyJSON
 			// Invoke methods tagged with [AfterDecode] attribute.
 			foreach (var method in type.GetMethods( instanceBindingFlags ))
 			{
-				if (method.GetCustomAttributes( false ).AnyOfType( typeof(AfterDecode) ))
+				if (method.GetCustomAttributes( false ).AnyOfType( typeof(AfterDecodeAttribute) ))
 				{
 					if (method.GetParameters().Length == 0)
 					{

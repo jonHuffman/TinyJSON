@@ -8,9 +8,9 @@ namespace TinyJSON
 {
 	public sealed class Encoder
 	{
-		static readonly Type includeAttrType = typeof(Include);
-		static readonly Type excludeAttrType = typeof(Exclude);
-		static readonly Type typeHintAttrType = typeof(TypeHint);
+		static readonly Type includeAttrType = typeof(IncludeAttribute);
+		static readonly Type excludeAttrType = typeof(ExcludeAttribute);
+		static readonly Type typeHintAttrType = typeof(TypeHintAttribute);
 
 		StringBuilder builder;
 		EncodeOptions options;
