@@ -169,7 +169,8 @@ Four options are currently available for JSON encoding, and can be passed in as 
 * `EncodeOptions.IgnoreAttributes` will encode skip the step of looking for attributes. This is a very slow part of decoding/encoding and turning this on will increase it's speed. 
 
 # Method Attributes
-`BeforeEncodeAttribute` when put on a method it will be called before the class is encoded. The method should return void and take no arguments.
+#### BeforeEncodeAttribute 
+when put on a method it will be called before the class is encoded. The method should return void and take no arguments.
 ```csharp
 	public class Person
 	{
@@ -180,7 +181,8 @@ Four options are currently available for JSON encoding, and can be passed in as 
 		}
 	}
 ```
-`AfterDecodeAttribute` when put on a method it will be called after a class has been decoded. The method should return void and take either no arguements or a Variant.
+#### AfterDecodeAttribute
+ when put on a method it will be called after a class has been decoded. The method should return void and take either no arguements or a Variant.
 ```csharp
 	public class Person
 	{
@@ -199,7 +201,8 @@ Four options are currently available for JSON encoding, and can be passed in as 
 ```
 
 # Field and Property Attributes
-`IncludeAttribute` will encode or decode this memeber. Only useful on private fields and properties. 
+#### IncludeAttribute
+will encode or decode this memeber. Only useful on private fields and properties. 
 ```csharp
 	public class Person
 	{
@@ -227,7 +230,8 @@ Outputs
 		"wearingGlasses" : false
 	}
 ```
-`ExcludeAttribute` will skip encoding or decoding this member. Only useful on public fields. 
+#### ExcludeAttribute
+will skip encoding or decoding this member. Only useful on public fields. 
 ```csharp
 	public class Person
 	{
@@ -255,7 +259,8 @@ Outputs
 		"wearingGlasses" : false
 	}
 ```
-`AliasAttribute` when the target is encoded or decode it will use it's alias name instead of the member name. 
+#### AliasAttribute
+ when the target is encoded or decode it will use it's alias name instead of the member name. 
 ```csharp
    public class Person
    {
@@ -284,7 +289,8 @@ Outputs
 		"wearingGlasses" : false
 	}
 ```
-`TypeHintAttribute` will encode this member with it's type name. When decoded it will be created using the encoded type now. Used for polymorphism.
+#### TypeHintAttribute
+ will encode this member with it's type name. When decoded it will be created using the encoded type now. Used for polymorphism.
 ```csharp
     public class Animal
     {
