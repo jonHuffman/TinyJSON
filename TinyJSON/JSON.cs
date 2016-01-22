@@ -199,10 +199,8 @@ namespace TinyJSON
 
                 MemberTypes memberType = members[i].MemberType;
 
-                Console.WriteLine("Member: " + members[i].Name);
                 if (memberType != MemberTypes.Property && memberType != MemberTypes.Field)
                 {
-                    Console.WriteLine("Skipping");
                     //Not a field or property we skip it. 
                     continue;
                 }

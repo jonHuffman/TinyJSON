@@ -36,16 +36,29 @@ public class TestClassType
         }
     }
 
-
-    [Test]
-    public void TestDumpClass()
+    public class AliasClass
     {
-        var testClass = new TestClass() { x = 5, y = 7, z = 0 };
-        testClass.list = new List<int>() { { 3 }, { 1 }, { 4 } };
+        [Include, Alias("Name")]
+        private string m_StringValue;
 
-        Assert.AreEqual("{\"@type\":\"" + testClass.GetType().FullName + "\",\"x\":5,\"y\":7,\"list\":[3,1,4]}", JSON.Dump(testClass));
+        [Include, Alias("height")]
+        public float floatValue;
 
-        Assert.IsTrue(beforeEncodeCallbackFired);
+        public string stringValue
+        {
+            get { return m_StringValue; }
+            set { m_StringValue = value; }
+        }
+
+        private int m_IntValue;
+
+        [Include, Alias("age")]
+        public int IntValue
+        {
+            get { return m_IntValue; }
+            set { m_IntValue = value; }
+        }
+
     }
 
     public class AttributeClass
@@ -57,6 +70,7 @@ public class TestClassType
 
         [Exclude]
         private int m_PropertyValue = 0;
+
 
         [Include]
         public int propertyValue
@@ -72,8 +86,22 @@ public class TestClassType
         }
     }
 
+
     [Test]
-    public void TestEncoderOptions_EncoderOptions()
+    public void TestDumpClass()
+    {
+        var testClass = new TestClass() { x = 5, y = 7, z = 0 };
+        testClass.list = new List<int>() { { 3 }, { 1 }, { 4 } };
+
+        Assert.AreEqual("{\"@type\":\"" + testClass.GetType().FullName + "\",\"x\":5,\"y\":7,\"list\":[3,1,4]}", JSON.Dump(testClass));
+
+        Assert.IsTrue(beforeEncodeCallbackFired);
+    }
+
+
+
+    [Test]
+    public void TestEncoderOptions()
     {
         AttributeClass aClass = new AttributeClass() { excludedField = 4, propertyValue = 10, privateField = 4 };
 
@@ -90,6 +118,34 @@ public class TestClassType
         Assert.AreEqual("{\"@type\":\"TestClassType+AttributeClass\",\"excludedField\":4,\"m_PrivateField\":4,\"m_PropertyValue\":10}", JSON.Dump(aClass, EncodeOptions.IgnoreAttributes | EncodeOptions.EncodePrivateVariables));
     }
 
+    [Test]
+    public void TestAliasAttribute()
+    {
+
+        //Encoding
+        {
+            AliasClass aClass = new AliasClass() { IntValue = 10, floatValue = 31.5f, stringValue = "Hamburger" };
+
+            // Normal Dump
+            Assert.AreEqual("{\"@type\":\"TestClassType+AliasClass\",\"Name\":\"Hamburger\",\"height\":31.5,\"age\":10}", JSON.Dump(aClass));
+
+            // Ignore Attributes
+            Assert.AreEqual("{\"@type\":\"TestClassType+AliasClass\",\"floatValue\":31.5}", JSON.Dump(aClass, EncodeOptions.IgnoreAttributes));
+        }
+
+        //Decoding
+        {
+            AliasClass aClass = null;
+
+            JSON.MakeInto<AliasClass>(JSON.Load("{\"@type\":\"TestClassType+AliasClass\",\"Name\":\"Hamburger\",\"height\":31.5,\"age\":10}"), out aClass);
+
+            Assert.AreEqual("Hamburger", aClass.stringValue);
+
+            Assert.AreEqual(31.5, aClass.floatValue);
+
+            Assert.AreEqual(10, aClass.IntValue);
+        }
+    }
 
 
     [Test]
@@ -108,15 +164,17 @@ public class TestClassType
         var testClass = new TestClass() { x = 5, y = 7, z = 0 };
         testClass.list = new List<int>() { { 3 }, { 1 }, { 4 } };
 
-        Assert.AreEqual(@"{
-    ""x"": 5,
-    ""y"": 7,
-    ""list"": [
-        3,
-        1,
-        4
-    ]
-}", JSON.Dump(testClass, EncodeOptions.PrettyPrint | EncodeOptions.NoTypeHints));
+        // Looks weird but this works on both iOS and Windows 
+        Assert.AreEqual(@"{" + Environment.NewLine +
+                         "\t\"x\": 5," + Environment.NewLine +
+                         "\t\"y\": 7," + Environment.NewLine +
+                         "\t\"list\": [" + Environment.NewLine +
+                         "\t\t3," + Environment.NewLine +
+                         "\t\t1," + Environment.NewLine +
+                         "\t\t4" + Environment.NewLine +
+                         "\t]" + Environment.NewLine +
+                         "}",
+        JSON.Dump(testClass, EncodeOptions.PrettyPrint | EncodeOptions.NoTypeHints));
     }
 
 
