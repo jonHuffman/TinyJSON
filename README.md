@@ -70,19 +70,50 @@ class TestClass
 	public TestEnum type;
 	public List<TestStruct> data = new List<TestStruct>();
 
+	/// <Summary>
+	/// ExcludeAttribute is used to stop a public field from being
+	/// encoded.
+	/// <\Summary>
 	[Exclude]
 	public int _ignored;
 
+	/// <Summary>
+	/// IncludeAttribute will mark a field or property to be incoded by
+	/// default private fields are not encoded. 
+	///
+	/// AliasAttribute renames the field or property to be encoded/decoded
+	/// with that name istead of it's real name. 
+	/// <\Summary>
+    [Include, Alias("name")]
+	private string m_Name;
+
+	/// <Summary>
+	/// This gets called before the class is about to be encoded. 
+	/// <\Summary>
 	[BeforeEncode]
 	public void BeforeEncode()
 	{
 		Console.WriteLine( "BeforeEncode callback fired!" );
 	}
 
+	/// <Summary>
+	/// This gets called after this class has been decoded. 
+	/// <\Summary>
 	[AfterDecode]
 	public void AfterDecode()
 	{
 		Console.WriteLine( "AfterDecode callback fired!" );
+	}
+
+	/// <Summary>
+	/// This version of AfterDecode takes a Variant as an argument. This allows
+	/// you to handle any special parsing. 
+	/// <\Summary>
+	[AfterDecode]
+	public void AfterDecodeWithVariant(Variant variant)
+	{
+		Console.WriteLine( "AfterDecode callback fired but this type we have the Variant being loaded" );
+		//You can use this variant to do any custom parsing that you want. 
 	}
 }
 ```
