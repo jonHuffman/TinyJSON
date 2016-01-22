@@ -135,7 +135,7 @@ public class TestCollectionTypes
 	public void TestDumpList()
 	{
 		var list = new List<int>() { { 3 }, { 1 }, { 4 } };
-		Assert.AreEqual( "[3,1,4]", JSON.Dump( list ) );
+		Assert.AreEqual( "[3,1,4]", JSON.Dump( list, EncodeOptions.PrettyPrint ) );
 	}
 
 

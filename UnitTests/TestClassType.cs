@@ -206,11 +206,35 @@ public class TestClassType
         public InnerClass inner;
     }
 
+    public class Animal
+    {
+        public int age = 32;
+    }
+
+    public class Person : Animal
+    {
+        public string name = "Frank";
+    }
+
+    public class Cat : Animal
+    {
+        public string petName = "Mittens";
+    }
+
+    public class Family
+    {
+        public Animal Mom = new Person() { name = "Mary" };
+        public Animal Dad = new Person() { name = "Dave" };
+        public Animal Pet = new Cat() { petName = "Mittens" };
+    }
+
+
     [Test]
     public void TestDumpOuterNoTypeHint()
     {
         var outerClass = new OuterClass();
         outerClass.inner = new InnerClass();
+        Console.WriteLine(JSON.Dump(new Family()));
         Assert.AreEqual("{\"inner\":{\"@type\":\"" + typeof(InnerClass).FullName + "\"}}", JSON.Dump(outerClass, EncodeOptions.NoTypeHints));
     }
 }

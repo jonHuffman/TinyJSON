@@ -169,21 +169,144 @@ Four options are currently available for JSON encoding, and can be passed in as 
 * `EncodeOptions.IgnoreAttributes` will encode skip the step of looking for attributes. This is a very slow part of decoding/encoding and turning this on will increase it's speed. 
 
 # Method Attributes
-* `BeforeEncodeAttribute` when put on a method it will be called before the class is encoded. The method should return void and take no arguments.
-* `AfterDecodeAttribute` when put on a method it will be called after a class has been decoded. The method should return void and take either no arguements or a Variant.
+`BeforeEncodeAttribute` when put on a method it will be called before the class is encoded. The method should return void and take no arguments.
+`AfterDecodeAttribute` when put on a method it will be called after a class has been decoded. The method should return void and take either no arguements or a Variant.
 
 # Field and Property Attributes
-* `AliasAttribute` when the target is encoded or decode it will use it's alias name instead of the member name. 
+`IncludeAttribute` will encode or decode this memeber. Only useful on private fields and properties. 
 ```csharp
-    [Alias("name")]
-	public string m_Name = "Byron"
+	public class Person
+	{
+		public float height = 3.4f;
+		[Include]
+		private int m_Age = 23;
+		private string m_WearingGlasses = false;
 
-	// Outputs "name" : "Byron"
+		[Include]
+		public bool wearingGlasses
+		{
+			get { return  m_WearingGlasses; }
+			set { m_WearingGlasses = value; }
+		}
+	}
 ```
-* `IncludeAttribute` will encode or decode this memeber. Only useful on private fields and properties. 
-* `ExcludeAttribute` will skip encoding or decoding this member. Only useful on public fields. 
-* `TypeHintAttribute` will encode this member with it's type name. When decoded it will be created using the encoded type now. Used for polymorphism.
+```csharp
+	JSON.Dump(new Person());
+```
+Outputs
+```json
+	{ 
+		"height" : 3.4,
+		"m_Age" : 23,
+		"wearingGlasses" : false
+	}
+```
+`ExcludeAttribute` will skip encoding or decoding this member. Only useful on public fields. 
+```csharp
+	public class Person
+	{
+		[Exclude]
+		public float height = 3.4f;
+		[Include]
+		private int m_Age = 23;
+		private string m_WearingGlasses = false;
 
+		[Include]
+		public bool wearingGlasses
+		{
+			get { return  m_WearingGlasses; }
+			set { m_WearingGlasses = value; }
+		}
+	}
+```
+```csharp
+	JSON.Dump(new Person());
+```
+Outputs 
+```json
+	{ 
+		"m_Age" : 23,
+		"wearingGlasses" : false
+	}
+```
+`AliasAttribute` when the target is encoded or decode it will use it's alias name instead of the member name. 
+```csharp
+   public class Person
+   {
+		[Exclude]
+		public float height = 3.4f;
+		[Include, Alias("age")]
+		private int m_Age = 23;
+		private string m_WearingGlasses = false;
+
+		[Include]
+		public bool wearingGlasses
+		{
+			get { return  m_WearingGlasses; }
+			set { m_WearingGlasses = value; }
+		}
+	}
+
+```
+```csharp
+	JSON.Dump(new Person());
+```
+Outputs 
+```json
+	{ 
+		"age" : 23,
+		"wearingGlasses" : false
+	}
+```
+`TypeHintAttribute` will encode this member with it's type name. When decoded it will be created using the encoded type now. Used for polymorphism.
+```csharp
+    public class Animal
+    {
+        public int age = 32;
+    }
+
+    public class Person : Animal
+    {
+        public string name = "Frank";
+    }
+
+    public class Cat : Animal
+    {
+        public string petName = "Mittens";
+    }
+
+    public class Family
+    {
+        public Animal Mom = new Person() { name = "Mary" };
+        public Animal Dad = new Person() { name = "Dave" };
+        public Animal Pet = new Cat() { petName = "Mittens" };
+    }
+```
+
+```csharp
+    JSON.Dump(new Family());
+```
+Ouputs 
+```json
+	{
+		"@type": "TestClassType+Family",
+		"Mom": {
+			"@type": "Person",
+			"name": "Mary",
+			"age": 32
+		},
+		"Dad": {
+			"@type": "Person",
+			"name": "Dave",
+			"age": 32
+		},
+		"Pet": {
+			"@type": "Cat",
+			"petName": "Mittens",
+			"age": 32
+		}
+	}
+```
 ## Using Variants
 
 For most use cases you can just assign, cast or make your object graph using the API outlined above, but at times you may need to work with the intermediate proxy objects to, say, dig through and iterate over a collection. To do this, cast the variant to the appropriate subclass (either `ProxyArray` or `ProxyObject`) and you're good to go:
