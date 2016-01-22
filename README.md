@@ -168,14 +168,18 @@ Four options are currently available for JSON encoding, and can be passed in as 
 * `EncodeOptions.EncodePrivateVariables` will encode all private variables, they are ingored unless the EncludeAttribute is used. Only public ones are encoded by default. 
 * `EncodeOptions.IgnoreAttributes` will encode skip the step of looking for attributes. This is a very slow part of decoding/encoding and turning this on will increase it's speed. 
 
-## Attributes
-
-# Methods 
+# Method Attributes
 * `BeforeEncodeAttribute` when put on a method it will be called before the class is encoded. The method should return void and take no arguments.
 * `AfterDecodeAttribute` when put on a method it will be called after a class has been decoded. The method should return void and take either no arguements or a Variant.
 
-# Fields and Properties 
+# Field and Property Attributes
 * `AliasAttribute` when the target is encoded or decode it will use it's alias name instead of the member name. 
+```csharp
+    [Alias("name")]
+	public string m_Name = "Byron"
+
+	// Outputs "name" : "Byron"
+```
 * `IncludeAttribute` will encode or decode this memeber. Only useful on private fields and properties. 
 * `ExcludeAttribute` will skip encoding or decoding this member. Only useful on public fields. 
 * `TypeHintAttribute` will encode this member with it's type name. When decoded it will be created using the encoded type now. Used for polymorphism.
