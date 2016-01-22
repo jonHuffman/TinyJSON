@@ -170,12 +170,15 @@ Four options are currently available for JSON encoding, and can be passed in as 
 
 ## Attributes
 
-* `BeforeEncodeAttribute` [Method] when put on a method it will be called before the class is incoded. The method should return void and take no arguments.
-* `AfterDecodeAttribute` [Method] when put on a method it will be called after a class has been decoded. The method should return void and take either no arguements or a Variant.
-* `AliasAttribute` [Field or Property] when the target is encoded or decode it will use it's alias name instead of the member name. 
-* `IncludeAttribute` [Field or Property] will encode or decode this memeber. Only useful on private fields and properties. 
-* `ExcludeAttribute` [Field or Property] will skip encoding or decoding this member. Only useful on public fields. 
-* `TypeHintAttribute` [Field or Property] will encode this member with it's type name. When decoded it will be created using the encoded type now. Used for polymorphism.
+# Methods 
+* `BeforeEncodeAttribute` when put on a method it will be called before the class is encoded. The method should return void and take no arguments.
+* `AfterDecodeAttribute` when put on a method it will be called after a class has been decoded. The method should return void and take either no arguements or a Variant.
+
+# Fields and Properties 
+* `AliasAttribute` when the target is encoded or decode it will use it's alias name instead of the member name. 
+* `IncludeAttribute` will encode or decode this memeber. Only useful on private fields and properties. 
+* `ExcludeAttribute` will skip encoding or decoding this member. Only useful on public fields. 
+* `TypeHintAttribute` will encode this member with it's type name. When decoded it will be created using the encoded type now. Used for polymorphism.
 
 ## Using Variants
 
