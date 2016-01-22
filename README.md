@@ -70,45 +70,24 @@ class TestClass
 	public TestEnum type;
 	public List<TestStruct> data = new List<TestStruct>();
 
-	/// <Summary>
-	/// ExcludeAttribute is used to stop a public field from being
-	/// encoded.
-	/// <\Summary>
 	[Exclude]
 	public int _ignored;
 
-	/// <Summary>
-	/// IncludeAttribute will mark a field or property to be incoded by
-	/// default private fields are not encoded. 
-	///
-	/// AliasAttribute renames the field or property to be encoded/decoded
-	/// with that name istead of it's real name. 
-	/// <\Summary>
     [Include, Alias("name")]
 	private string m_Name;
 
-	/// <Summary>
-	/// This gets called before the class is about to be encoded. 
-	/// <\Summary>
 	[BeforeEncode]
 	public void BeforeEncode()
 	{
 		Console.WriteLine( "BeforeEncode callback fired!" );
 	}
 
-	/// <Summary>
-	/// This gets called after this class has been decoded. 
-	/// <\Summary>
 	[AfterDecode]
 	public void AfterDecode()
 	{
 		Console.WriteLine( "AfterDecode callback fired!" );
 	}
 
-	/// <Summary>
-	/// This version of AfterDecode takes a Variant as an argument. This allows
-	/// you to handle any special parsing. 
-	/// <\Summary>
 	[AfterDecode]
 	public void AfterDecodeWithVariant(Variant variant)
 	{
@@ -128,7 +107,7 @@ testClass.data.Add( new TestStruct() { x = 1, y = 2 } );
 testClass.data.Add( new TestStruct() { x = 3, y = 4 } );
 testClass.data.Add( new TestStruct() { x = 5, y = 6 } );
 
-var testClassJson = JSON.Dump( testClass, true );
+var testClassJson = JSON.Dump( testClass, EncodeOptions.PrettyPrint );
 Console.WriteLine( testClassJson );
 ```
 
@@ -182,10 +161,21 @@ When decoding polymorphic types, TinyJSON has no way of knowing which subclass t
 
 ## Encode Options
 
-Two options are currently available for JSON encoding, and can be passed in as a second parameter to `JSON.Dump()`.
+Four options are currently available for JSON encoding, and can be passed in as a second parameter to `JSON.Dump()`.
 
 * `EncodeOptions.PrettyPrint` will output nicely formatted JSON to make it more readable.
 * `EncodeOptions.NoTypeHints` will disable the outputting of type hints into the JSON output. This may be desirable if you plan to read the JSON into another application that might choke on the type information. You can override this on a per-member basis with the `TinyJSON.TypeHint` attribute.
+* `EncodeOptions.EncodePrivateVariables` will encode all private variables, they are ingored unless the EncludeAttribute is used. Only public ones are encoded by default. 
+* `EncodeOptions.IgnoreAttributes` will encode skip the step of looking for attributes. This is a very slow part of decoding/encoding and turning this on will increase it's speed. 
+
+## Attributes
+
+* `BeforeEncodeAttribute` [Method] when put on a method it will be called before the class is incoded. The method should return void and take no arguments.
+* `AfterDecodeAttribute` [Method] when put on a method it will be called after a class has been decoded. The method should return void and take either no arguements or a Variant.
+* `AliasAttribute` [Field or Property] when the target is encoded or decode it will use it's alias name instead of the member name. 
+* `IncludeAttribute` [Field or Property] will encode or decode this memeber. Only useful on private fields and properties. 
+* `ExcludeAttribute` [Field or Property] will skip encoding or decoding this member. Only useful on public fields. 
+* `TypeHintAttribute` [Field or Property] will encode this member with it's type name. When decoded it will be created using the encoded type now. Used for polymorphism.
 
 ## Using Variants
 
