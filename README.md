@@ -170,7 +170,33 @@ Four options are currently available for JSON encoding, and can be passed in as 
 
 # Method Attributes
 `BeforeEncodeAttribute` when put on a method it will be called before the class is encoded. The method should return void and take no arguments.
+```csharp
+	public class Person
+	{
+		[BeforeEncode]
+		public void BeforeEncoding()
+		{
+			Console.WriteLine("I am about to be encoded!"});
+		}
+	}
+```
 `AfterDecodeAttribute` when put on a method it will be called after a class has been decoded. The method should return void and take either no arguements or a Variant.
+```csharp
+	public class Person
+	{
+		[AfterDecode]
+		public void AfterDecode()
+		{
+			Console.WriteLine("I have been decoded!"});
+		}
+
+		[AfterDecode]
+		public void AfterDecodeWithVariant(Variant variant)
+		{
+			Console.WriteLine("I have been decoded!"});
+		}
+	}
+```
 
 # Field and Property Attributes
 `IncludeAttribute` will encode or decode this memeber. Only useful on private fields and properties. 
