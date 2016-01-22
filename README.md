@@ -165,7 +165,7 @@ Four options are currently available for JSON encoding, and can be passed in as 
 
 * `EncodeOptions.PrettyPrint` will output nicely formatted JSON to make it more readable.
 * `EncodeOptions.NoTypeHints` will disable the outputting of type hints into the JSON output. This may be desirable if you plan to read the JSON into another application that might choke on the type information. You can override this on a per-member basis with the `TinyJSON.TypeHint` attribute.
-* `EncodeOptions.EncodePrivateVariables` will encode all private variables, they are ingored unless the EncludeAttribute is used. Only public ones are encoded by default. 
+* `EncodeOptions.EncodePrivateVariables` will encode all private variables, they are ingored unless the IncludeAttribute is used. Only public ones are encoded by default. 
 * `EncodeOptions.IgnoreAttributes` will encode skip the step of looking for attributes. This is a very slow part of decoding/encoding and turning this on will increase it's speed. 
 
 # Method Attributes
@@ -317,8 +317,11 @@ Outputs
 
     public class Family
     {
+    	[TypeHint]
         public Animal Mom = new Person() { name = "Mary" };
+        [TypeHint]
         public Animal Dad = new Person() { name = "Dave" };
+        [TypeHint]
         public Animal Pet = new Cat() { petName = "Mittens" };
     }
 ```
