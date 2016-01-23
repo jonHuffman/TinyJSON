@@ -34,6 +34,12 @@ namespace TinyJSON
         /// </summary>
         IgnoreAttributes = 1 << 4,
 
+        /// <summary>
+        /// TinyJson supports writing Arrays as combinable. This writes and @index key for each array. 
+        /// This allows you to take one json files and combine it with a second one. If not @index keys
+        /// exist the two arrays will just be combined. 
+        /// </summary>
+        Combinable = 1 << 5,
 
     }
 }

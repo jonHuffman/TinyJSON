@@ -5,93 +5,95 @@ using System.Collections.Generic;
 
 namespace TinyJSON
 {
-	public sealed class ProxyArray : Variant, IEnumerable<Variant>
-	{
-		private List<Variant> list;
+    public sealed class ProxyArray : Variant, IEnumerable<Variant>
+    {
+        public const string CombineHintName = "@index";
+
+        private List<Variant> list;
 
 
-		public ProxyArray()
-		{
-			list = new List<Variant>();
-		}
+        public ProxyArray()
+        {
+            list = new List<Variant>();
+        }
 
 
-		IEnumerator<Variant> IEnumerable<Variant>.GetEnumerator()
-		{
-			return list.GetEnumerator();
-		}
+        IEnumerator<Variant> IEnumerable<Variant>.GetEnumerator()
+        {
+            return list.GetEnumerator();
+        }
 
 
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return list.GetEnumerator();
-		}
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return list.GetEnumerator();
+        }
 
 
-		public void Add( Variant item )
-		{
-			list.Add( item );
-		}
+        public void Add( Variant item )
+        {
+            list.Add( item );
+        }
 
 
-		public override Variant this[ int index ]
-		{
-			get { return list[index]; }
-			set { list[index] = value; }
-		}
+        public override Variant this[ int index ]
+        {
+            get { return list[index]; }
+            set { list[index] = value; }
+        }
 
 
-		public int Count
-		{
-			get { return list.Count; }
-		}
+        public int Count
+        {
+            get { return list.Count; }
+        }
 
 
-		internal bool CanBeMultiRankArray( int[] rankLengths )
-		{
-			return CanBeMultiRankArray( 0, rankLengths );
-		}
+        internal bool CanBeMultiRankArray( int[] rankLengths )
+        {
+            return CanBeMultiRankArray( 0, rankLengths );
+        }
 
 
-		private bool CanBeMultiRankArray( int rank, int[] rankLengths )
-		{
-			var count = list.Count;
-			rankLengths[rank] = count;
+        private bool CanBeMultiRankArray( int rank, int[] rankLengths )
+        {
+            var count = list.Count;
+            rankLengths[rank] = count;
 
-			if (rank == rankLengths.Length - 1)
-			{
-				return true;
-			}
+            if (rank == rankLengths.Length - 1)
+            {
+                return true;
+            }
 
-			var firstItem = list[0] as ProxyArray;
-			if (firstItem == null)
-			{
-				return false;
-			}
-			var firstItemCount = firstItem.Count;
+            var firstItem = list[0] as ProxyArray;
+            if (firstItem == null)
+            {
+                return false;
+            }
+            var firstItemCount = firstItem.Count;
 
-			for (int i = 1; i < count; i++)
-			{
-				var item = list[i] as ProxyArray;
+            for (int i = 1; i < count; i++)
+            {
+                var item = list[i] as ProxyArray;
 
-				if (item == null)
-				{
-					return false;
-				}
+                if (item == null)
+                {
+                    return false;
+                }
 
-				if (item.Count != firstItemCount)
-				{
-					return false;
-				}
+                if (item.Count != firstItemCount)
+                {
+                    return false;
+                }
 
-				if (!item.CanBeMultiRankArray( rank + 1, rankLengths ))
-				{
-					return false;
-				}
-			}
+                if (!item.CanBeMultiRankArray( rank + 1, rankLengths ))
+                {
+                    return false;
+                }
+            }
 
-			return true;
-		}
-	}
+            return true;
+        }
+    }
 }
 

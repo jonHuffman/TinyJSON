@@ -35,7 +35,8 @@ namespace TinyJSON
         public static string Encode(object obj, EncodeOptions options)
         {
             var instance = new Encoder(options);
-            instance.EncodeValue(obj, false);
+            int combineIndex = instance.combinable ? 0 : -1; 
+            instance.EncodeValue(obj, false, combineIndex);
             return instance.builder.ToString();
         }
 
@@ -74,8 +75,16 @@ namespace TinyJSON
             }
         }
 
+        bool combinable
+        {
+            get
+            {
+                return ((options & EncodeOptions.Combinable) == EncodeOptions.Combinable);
+            }
+        }
 
-        void EncodeValue(object value, bool forceTypeHint)
+
+        void EncodeValue(object value, bool forceTypeHint, int combineIndex)
         {
             Array asArray;
             IList asList;
@@ -87,48 +96,50 @@ namespace TinyJSON
                 builder.Append("null");
             }
             else
-            if ((asString = value as string) != null)
             {
-                EncodeString(asString);
-            }
-            else
-            if (value is bool)
-            {
-                builder.Append(value.ToString().ToLower());
-            }
-            else
-            if (value is Enum)
-            {
-                EncodeString(value.ToString());
-            }
-            else
-            if ((asArray = value as Array) != null)
-            {
-                EncodeArray(asArray, forceTypeHint);
-            }
-            else
-            if ((asList = value as IList) != null)
-            {
-                EncodeList(asList, forceTypeHint);
-            }
-            else
-            if ((asDict = value as IDictionary) != null)
-            {
-                EncodeDictionary(asDict, forceTypeHint);
-            }
-            else
-            if (value is char)
-            {
-                EncodeString(value.ToString());
-            }
-            else
-            {
-                EncodeOther(value, forceTypeHint);
+                if ((asString = value as string) != null)
+                {
+                    EncodeString(asString);
+                }
+                else
+                if (value is bool)
+                {
+                    builder.Append(value.ToString().ToLower());
+                }
+                else
+                if (value is Enum)
+                {
+                    EncodeString(value.ToString());
+                }
+                else
+                if ((asArray = value as Array) != null)
+                {
+                    EncodeArray(asArray, forceTypeHint);
+                }
+                else
+                if ((asList = value as IList) != null)
+                {
+                    EncodeList(asList, forceTypeHint);
+                }
+                else
+                if ((asDict = value as IDictionary) != null)
+                {
+                    EncodeDictionary(asDict, forceTypeHint);
+                }
+                else
+                if (value is char)
+                {
+                    EncodeString(value.ToString());
+                }
+                else
+                {
+                    EncodeOther(value, forceTypeHint, combineIndex);
+                }
             }
         }
 
 
-        void EncodeObject(object value, bool forceTypeHint)
+        void EncodeObject(object value, bool forceTypeHint, int combineIndex)
         {
             Type type = value.GetType();
 
@@ -146,6 +157,19 @@ namespace TinyJSON
                 EncodeString(ProxyObject.TypeHintName);
                 AppendColon();
                 EncodeString(type.FullName);
+                firstItem = false;
+            }
+
+            if(combineIndex > -1)
+            {
+                if (prettyPrintEnabled)
+                {
+                    AppendIndent();
+                }
+                EncodeString(ProxyArray.CombineHintName);
+                AppendColon();
+                EncodeOther(combineIndex, forceTypeHint, combineIndex);
+                combineIndex++;
                 firstItem = false;
             }
 
@@ -201,7 +225,7 @@ namespace TinyJSON
                     AppendComma(firstItem);
                     EncodeString(fieldName);
                     AppendColon();
-                    EncodeValue(fields[i].GetValue(value), shouldTypeHint);
+                    EncodeValue(fields[i].GetValue(value), shouldTypeHint, combineIndex);
                     firstItem = false;
                 }
             }
@@ -257,7 +281,7 @@ namespace TinyJSON
                             AppendComma(firstItem);
                             EncodeString(propertyName);
                             AppendColon();
-                            EncodeValue(properties[i].GetValue(value, null), shouldTypeHint);
+                            EncodeValue(properties[i].GetValue(value, null), shouldTypeHint, -1);
                             firstItem = false;
                         }
                     }
@@ -286,7 +310,7 @@ namespace TinyJSON
                     AppendComma(firstItem);
                     EncodeString(e.ToString());
                     AppendColon();
-                    EncodeValue(value[e], forceTypeHint);
+                    EncodeValue(value[e], forceTypeHint, -1);
                     firstItem = false;
                 }
 
@@ -306,10 +330,11 @@ namespace TinyJSON
                 AppendOpenBracket();
 
                 var firstItem = true;
-                foreach (object obj in value)
+
+                for(int i = 0; i < value.Count; i++)
                 {
                     AppendComma(firstItem);
-                    EncodeValue(obj, forceTypeHint);
+                    EncodeValue(value[i], forceTypeHint, combinable ? i : -1);
                     firstItem = false;
                 }
 
@@ -327,12 +352,12 @@ namespace TinyJSON
             else
             {
                 var indices = new int[value.Rank];
-                EncodeArrayRank(value, 0, indices, forceTypeHint);
+                EncodeArrayRank(value, 0, indices, forceTypeHint, 0);
             }
         }
 
 
-        void EncodeArrayRank(Array value, int rank, int[] indices, bool forceTypeHint)
+        void EncodeArrayRank(Array value, int rank, int[] indices, bool forceTypeHint, int combineIndex)
         {
             AppendOpenBracket();
 
@@ -345,7 +370,7 @@ namespace TinyJSON
                 {
                     indices[rank] = i;
                     AppendComma(i == min);
-                    EncodeValue(value.GetValue(indices), forceTypeHint);
+                    EncodeValue(value.GetValue(indices), forceTypeHint, combinable ? i : -1);
                 }
             }
             else
@@ -354,7 +379,7 @@ namespace TinyJSON
                 {
                     indices[rank] = i;
                     AppendComma(i == min);
-                    EncodeArrayRank(value, rank + 1, indices, forceTypeHint);
+                    EncodeArrayRank(value, rank + 1, indices, forceTypeHint, combinable ? i : -1);
                 }
             }
 
@@ -418,7 +443,7 @@ namespace TinyJSON
         }
 
 
-        void EncodeOther(object value, bool forceTypeHint)
+        void EncodeOther(object value, bool forceTypeHint, int combineIndex)
         {
             if (value is float ||
                 value is double ||
@@ -436,7 +461,7 @@ namespace TinyJSON
             }
             else
             {
-                EncodeObject(value, forceTypeHint);
+                EncodeObject(value, forceTypeHint, combineIndex);
             }
         }
 

@@ -45,7 +45,6 @@ namespace TinyJSON
             return dict.ContainsKey(key);
         }
 
-
         public string TypeHint
         {
             get
