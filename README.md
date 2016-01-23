@@ -167,6 +167,7 @@ Four options are currently available for JSON encoding, and can be passed in as 
 * `EncodeOptions.NoTypeHints` will disable the outputting of type hints into the JSON output. This may be desirable if you plan to read the JSON into another application that might choke on the type information. You can override this on a per-member basis with the `TinyJSON.TypeHint` attribute.
 * `EncodeOptions.EncodePrivateVariables` will encode all private variables, they are ingored unless the IncludeAttribute is used. Only public ones are encoded by default. 
 * `EncodeOptions.IgnoreAttributes` will encode skip the step of looking for attributes. This is a very slow part of decoding/encoding and turning this on will increase it's speed. 
+* `EncodeOptions.Combinable` will encode array elements with a `@Index` key for all objects. This is used for merging arrays with `Variant.Combine()`
 
 # Method Attributes
 #### BeforeEncodeAttribute 
@@ -224,7 +225,7 @@ Four options are currently available for JSON encoding, and can be passed in as 
 ```csharp
 	JSON.Dump(new Person());
 ```
-Outputs
+Will output:
 ```json
 	{ 
 		"height" : 3.4,
@@ -256,7 +257,7 @@ Outputs
 ```csharp
 	JSON.Dump(new Person());
 ```
-Outputs 
+Will output:
 ```json
 	{ 
 		"m_Age" : 23,
@@ -288,7 +289,7 @@ Outputs
 ```csharp
 	JSON.Dump(new Person());
 ```
-Outputs 
+Will output:
 ```json
 	{ 
 		"age" : 23,
