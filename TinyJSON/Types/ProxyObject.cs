@@ -58,7 +58,6 @@ namespace TinyJSON
             }
         }
 
-
         public override Variant this[string key]
         {
             get { return dict[key]; }

@@ -40,26 +40,39 @@ namespace TinyJSON
         /// arrays will just be added to each other. When creating your own json use the 
         /// <see cref="EncodeOptions.Combinable"/> to make it add indexes. 
         /// </summary>
-        /// <param name="startingVariant">The variant to be used as the base.</param>
-        /// <param name="combineWith">The one you are merging in</param>
-        /// <returns>The combination of the two variants.</returns>
-        public static Variant Combine(Variant startingVariant, Variant combineWith)
+        /// <param name="combinedVariant">The one you are merging in</param>
+        /// <returns>The combination of the two Variant.</returns>
+        public Variant Combine(Variant combinedVariant)
         {
-            if(startingVariant == null)
+            if (combinedVariant == null)
             {
-                throw new ArgumentException("The Starting Variant is null which can not be handled");
+                throw new ArgumentException("The combinedVariant is null which can not be handled");
             }
-            
-            if(combineWith == null)
+            else
             {
-                throw new ArgumentException("The combineWith Variant is null which can not be handled");
+                return CombineVariant(this, combinedVariant);
             }
-
-            Variant combined = startingVariant;
-            return CombineVariant(combined, combineWith); ;
         }
 
-        private static Variant CombineVariant(Variant startingVariant, Variant combineWith)
+        public static T CombineInto<T>(T @base, params T[] combineTargets) where T : Variant
+        {
+            for(int i = 0; i < combineTargets.Length; i++)
+            {
+                @base = (T)CombineVariant(@base, combineTargets[i]);
+            }
+            return @base;
+        }
+
+        public static T CombineInto<T>(Variant @base, params Variant[] combineTargets) where T : Variant
+        {
+            for (int i = 0; i < combineTargets.Length; i++)
+            {
+                @base = CombineVariant(@base, combineTargets[i]);
+            }
+            return (T)@base;
+        }
+
+        protected static Variant CombineVariant(Variant startingVariant, Variant combineWith)
         {
             Type type = null;
 
@@ -260,7 +273,6 @@ namespace TinyJSON
         {
             return ToString(formatProvider);
         }
-
 
         public virtual Variant this[string key]
         {

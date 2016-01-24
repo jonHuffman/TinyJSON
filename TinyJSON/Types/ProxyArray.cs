@@ -54,7 +54,6 @@ namespace TinyJSON
             return CanBeMultiRankArray( 0, rankLengths );
         }
 
-
         private bool CanBeMultiRankArray( int rank, int[] rankLengths )
         {
             var count = list.Count;

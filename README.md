@@ -25,7 +25,7 @@ namespace TinyJSON
 	public static class JSON
 	{
 		public static Variant Load( string json );
-		public static string Dump( object data, EncodeOptions = EncodeOptions.None );
+		public static string Dump( object data, EncodeOptions.None );
 		public static void MakeInto<T>( Variant data, out T item );
 	}
 }
@@ -371,6 +371,38 @@ foreach (var pair in dict as ProxyObject)
 }
 ```
 
+## Combining JSON 
+There are times where you want to combine one set of json data with another. This can be used to have one json file for default values and a second one to override any values that are contained in it. If any values are in the second one that are not in the first one they will be appended. In the example below we define the second person as Frank who is 32. We then override bot the name and age. The final result is Mike who is 100.
+
+```csharp
+//Define our people 
+Variant people = JSON.Load("[{\"@index\":0,\"name\":\"Jenny\",\"age\":12},{\"@index\":1,\"name\":\"Frank\",\"age\":32}]");
+
+//Redefine person[1] name to Mike from Frank
+Variant nameOverride = JSON.Load("[{\"@index\":1,\"name\":\"Mike\"}]");
+
+//Redefine person[1] age to 100 from 32
+Variant ageOverride = JSON.Load("[{\"@index\":1,\"age\":100}]");
+
+//Merge three variants into one ProxyArray
+ProxyArray peopleArray = Variant.CombineInto<ProxyArray>(people, nameOverride, ageOverride);
+
+JSON.Dump(peopleArray, EncodeOptions.PrettyPrint);
+
+```
+Will Output:
+```json
+[{
+	"@index": 0,
+	"name": "Jenny",
+	"age": 12
+}, {
+	"@index": 1,
+	"name": "Mike",
+	"age": 100
+}]
+```
+
 ## Notes
 
 This project was developed with pain elimination and lightweight size in mind. That said, it should be able able to handle reasonable amounts of reasonable data at reasonable speeds.
@@ -380,6 +412,8 @@ My primary use case for this library is with Mono and Unity3D (currently version
 ## Meta
 
 Handcrafted by Patrick Hogan [[twitter](http://twitter.com/pbhogan) &bull; [github](http://github.com/pbhogan) &bull; [website](http://www.gallantgames.com)]
+
+Extended by Byron Mayne [[twitter](https://twitter.com/byMayne) &bull; [github](https://github.com/ByronMayne)]
 
 Based on [MiniJSON](https://gist.github.com/darktable/1411710) by Calvin Rien
 

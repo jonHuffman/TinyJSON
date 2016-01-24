@@ -50,18 +50,19 @@ namespace UnitTests
         [Test]
         public void CombineTest()
         {
-            Variant var1 = JSON.Load("[{\"@index\":0,\"name\":\"Jenny\",\"age\":12},{\"@index\":1,\"name\":\"Frank\",\"age\":32}]");
+            Variant people = JSON.Load("[{\"@index\":0,\"name\":\"Jenny\",\"age\":12},{\"@index\":1,\"name\":\"Frank\",\"age\":32}]");
 
             //Redefine person[1] name to Mike from Frank
-            Variant var2 = JSON.Load("[{\"@index\":1,\"name\":\"Mike\"}]");
+            Variant nameOverride = JSON.Load("[{\"@index\":1,\"name\":\"Mike\"}]");
 
             //Redefine person[1] age to 100 from 32
-            Variant var3 = JSON.Load("[{\"@index\":1,\"age\":100}]");
+            Variant ageOverride = JSON.Load("[{\"@index\":1,\"age\":100}]");
 
-            ProxyArray combined = (ProxyArray)Variant.Combine(var1, var2);
-            combined = (ProxyArray)Variant.Combine(combined, var3);
+            //Merge three variants into one ProxyArray
+            ProxyArray peopleArray = Variant.CombineInto<ProxyArray>(people, nameOverride, ageOverride);
 
-            Person[] persons = combined.Make<Person[]>();
+
+            Person[] persons = peopleArray.Make<Person[]>();
 
             Assert.AreEqual(2, persons.Length);
             Assert.AreEqual("Jenny", persons[0].name);
@@ -69,6 +70,10 @@ namespace UnitTests
             Assert.AreEqual("Mike", persons[1].name);
             Assert.AreEqual(100, persons[1].age);
 
+            for(int i = 0; i < persons.Length; i++)
+            {
+                Console.WriteLine(persons[i].name + " is " + persons[i].age + " years old");
+            }
         }
     }
 
