@@ -8,41 +8,49 @@ namespace TinyJSON
     public sealed class ProxyObject : Variant, IEnumerable<KeyValuePair<string, Variant>>
     {
         internal const string TypeHintName = "@type";
-        private Dictionary<string, Variant> dict;
+        private Dictionary<string, Variant> m_Value;
 
 
         public ProxyObject()
         {
-            dict = new Dictionary<string, Variant>();
+            m_Value = new Dictionary<string, Variant>();
+        }
+
+        public override object value
+        {
+            get
+            {
+                return m_Value;
+            }
         }
 
 
         IEnumerator<KeyValuePair<string, Variant>> IEnumerable<KeyValuePair<string, Variant>>.GetEnumerator()
         {
-            return dict.GetEnumerator();
+            return m_Value.GetEnumerator();
         }
 
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return dict.GetEnumerator();
+            return m_Value.GetEnumerator();
         }
 
 
         public void Add(string key, Variant item)
         {
-            dict.Add(key, item);
+            m_Value.Add(key, item);
         }
 
 
         public bool TryGetValue(string key, out Variant item)
         {
-            return dict.TryGetValue(key, out item);
+            return m_Value.TryGetValue(key, out item);
         }
 
         public bool ContainsKey(string key)
         {
-            return dict.ContainsKey(key);
+            return m_Value.ContainsKey(key);
         }
 
         public string TypeHint
@@ -60,14 +68,14 @@ namespace TinyJSON
 
         public override Variant this[string key]
         {
-            get { return dict[key]; }
-            set { dict[key] = value; }
+            get { return m_Value[key]; }
+            set { m_Value[key] = value; }
         }
 
 
         public int Count
         {
-            get { return dict.Count; }
+            get { return m_Value.Count; }
         }
     }
 }

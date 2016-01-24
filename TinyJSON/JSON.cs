@@ -27,7 +27,7 @@ namespace TinyJSON
 
         public static string Dump(object data)
         {
-            return Dump(data, EncodeOptions.None);
+            return Dump(data, EncodeOptions.Default);
         }
 
 
@@ -403,6 +403,8 @@ namespace TinyJSON
             DecodeDictionary<Decimal, T>(null);
             DecodeDictionary<Boolean, T>(null);
             DecodeDictionary<String, T>(null);
+            Variant.CombineInto<ProxyObject>(null);
+            Variant.CombineInto<ProxyArray>(null);
         }
 
 

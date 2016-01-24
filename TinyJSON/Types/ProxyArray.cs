@@ -9,43 +9,50 @@ namespace TinyJSON
     {
         public const string CombineHintName = "@index";
 
-        private List<Variant> list;
+        private List<Variant> m_Value;
 
 
         public ProxyArray()
         {
-            list = new List<Variant>();
+            m_Value = new List<Variant>();
         }
 
+        public override object value
+        {
+            get
+            {
+                return m_Value;
+            }
+        }
 
         IEnumerator<Variant> IEnumerable<Variant>.GetEnumerator()
         {
-            return list.GetEnumerator();
+            return m_Value.GetEnumerator();
         }
 
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return list.GetEnumerator();
+            return m_Value.GetEnumerator();
         }
 
 
         public void Add( Variant item )
         {
-            list.Add( item );
+            m_Value.Add( item );
         }
 
 
         public override Variant this[ int index ]
         {
-            get { return list[index]; }
-            set { list[index] = value; }
+            get { return m_Value[index]; }
+            set { m_Value[index] = value; }
         }
 
 
         public int Count
         {
-            get { return list.Count; }
+            get { return m_Value.Count; }
         }
 
 
@@ -56,7 +63,7 @@ namespace TinyJSON
 
         private bool CanBeMultiRankArray( int rank, int[] rankLengths )
         {
-            var count = list.Count;
+            var count = m_Value.Count;
             rankLengths[rank] = count;
 
             if (rank == rankLengths.Length - 1)
@@ -64,7 +71,7 @@ namespace TinyJSON
                 return true;
             }
 
-            var firstItem = list[0] as ProxyArray;
+            var firstItem = m_Value[0] as ProxyArray;
             if (firstItem == null)
             {
                 return false;
@@ -73,7 +80,7 @@ namespace TinyJSON
 
             for (int i = 1; i < count; i++)
             {
-                var item = list[i] as ProxyArray;
+                var item = m_Value[i] as ProxyArray;
 
                 if (item == null)
                 {

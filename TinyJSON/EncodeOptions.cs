@@ -9,7 +9,7 @@ namespace TinyJSON
         /// <summary>
         /// Does not use any special logic when encoding.
         /// </summary>
-        None = 0,
+        Default = 0,
         /// <summary>
         /// The encoders output will be formatted to be more human readable. 
         /// </summary>

@@ -36,7 +36,7 @@ namespace UnitTests
             //Check to see if index was added and incremented correctly. 
             {
                 string json = JSON.Dump(m_JsonArray, EncodeOptions.Combinable | EncodeOptions.NoTypeHints);
-                Assert.AreEqual("[{\"@index\":\"0\",\"name\":\"Jenny\",\"age\":12},{\"@index\":\"1\",\"name\":\"Frank\",\"age\":32}]", json);
+                Assert.AreEqual("[{\"@index\":0,\"name\":\"Jenny\",\"age\":12},{\"@index\":1,\"name\":\"Frank\",\"age\":32}]", json);
             }
 
             //This should not have any @index values. 
@@ -50,6 +50,8 @@ namespace UnitTests
         [Test]
         public void CombineTest()
         {
+
+            //Define our people 
             Variant people = JSON.Load("[{\"@index\":0,\"name\":\"Jenny\",\"age\":12},{\"@index\":1,\"name\":\"Frank\",\"age\":32}]");
 
             //Redefine person[1] name to Mike from Frank
@@ -74,6 +76,23 @@ namespace UnitTests
             {
                 Console.WriteLine(persons[i].name + " is " + persons[i].age + " years old");
             }
+        }
+
+        [Test]
+        public void DumpVariantTest()
+        {
+            string json = "[{\"@index\":0,\"name\":\"Jenny\",\"age\":12},{\"@index\":1,\"name\":\"Frank\",\"age\":32}]";
+
+            //Load it
+            Variant people = JSON.Load(json);
+
+            //Dump it
+            string jsonDump = JSON.Dump(people);
+            string localDump = people.Dump();
+
+            //Test it
+            Assert.AreEqual(json, jsonDump);
+            Assert.AreEqual(json, localDump);
         }
     }
 

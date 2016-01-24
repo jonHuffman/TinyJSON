@@ -13,10 +13,9 @@ namespace TinyJSON
         static readonly Type typeHintAttrType = typeof(TypeHintAttribute);
 
 
-        StringBuilder builder;
-        EncodeOptions options;
-        int indent;
-
+        private StringBuilder builder;
+        private EncodeOptions options;
+        private int indent;
 
         Encoder(EncodeOptions options)
         {
@@ -25,17 +24,20 @@ namespace TinyJSON
             indent = 0;
         }
 
-
         public static string Encode(object obj)
         {
-            return Encode(obj, EncodeOptions.None);
+            return InternalEncode(obj, EncodeOptions.Default, skipOverVariants: false);
         }
-
 
         public static string Encode(object obj, EncodeOptions options)
         {
+            return InternalEncode(obj, options, skipOverVariants: false);
+        }
+
+        private static string InternalEncode(object obj, EncodeOptions options, bool skipOverVariants)
+        {
             var instance = new Encoder(options);
-            int combineIndex = instance.combinable ? 0 : -1; 
+            int combineIndex = instance.combinable ? 0 : -1;
             instance.EncodeValue(obj, false, combineIndex);
             return instance.builder.ToString();
         }
@@ -87,6 +89,7 @@ namespace TinyJSON
         void EncodeValue(object value, bool forceTypeHint, int combineIndex)
         {
             Array asArray;
+            Variant asVariant;
             IList asList;
             IDictionary asDict;
             string asString;
@@ -131,6 +134,11 @@ namespace TinyJSON
                 {
                     EncodeString(value.ToString());
                 }
+                else 
+                if ((asVariant = value as Variant) != null)
+                {
+                    EncodeValue(asVariant.value, forceTypeHint, combineIndex);
+                }
                 else
                 {
                     EncodeOther(value, forceTypeHint, combineIndex);
@@ -160,7 +168,7 @@ namespace TinyJSON
                 firstItem = false;
             }
 
-            if(combineIndex > -1)
+            if (combineIndex > -1)
             {
                 if (prettyPrintEnabled)
                 {
@@ -331,7 +339,7 @@ namespace TinyJSON
 
                 var firstItem = true;
 
-                for(int i = 0; i < value.Count; i++)
+                for (int i = 0; i < value.Count; i++)
                 {
                     AppendComma(firstItem);
                     EncodeValue(value[i], forceTypeHint, combinable ? i : -1);

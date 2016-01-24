@@ -30,46 +30,42 @@ namespace TinyJSON
             return TypeCode.Object;
         }
 
-        /// <summary>
-        /// Takes one Variant as a starting base and combines it with a second one. Any 
-        /// values that are not contained in the first one but are in the second will be added.
-        /// If both Variants contains the see keys the first one will have it's values overwritten
-        /// by the second one. 
-        /// Note:
-        /// Arrays can only be combined if there is a @Index key in each object. If none exist all 
-        /// arrays will just be added to each other. When creating your own json use the 
-        /// <see cref="EncodeOptions.Combinable"/> to make it add indexes. 
-        /// </summary>
-        /// <param name="combinedVariant">The one you are merging in</param>
-        /// <returns>The combination of the two Variant.</returns>
-        public Variant Combine(Variant combinedVariant)
+        public abstract object value
         {
-            if (combinedVariant == null)
-            {
-                throw new ArgumentException("The combinedVariant is null which can not be handled");
-            }
-            else
-            {
-                return CombineVariant(this, combinedVariant);
-            }
+            get;
         }
 
-        public static T CombineInto<T>(T @base, params T[] combineTargets) where T : Variant
+        /// <summary>
+        /// Takes an array of Variants that and tries to combine them into one 
+        /// class. All combining class must be the same root type
+        /// <see cref="ProxyObject"/> or <see cref="ProxyArray"/>. Classes are 
+        /// merged one at a time starting from the top of the array and moving down. 
+        /// </summary>
+        /// <typeparam name="T">The type of Variant you want to combine.</typeparam>
+        /// <param name="targets">The list of Variants objects that 
+        /// you want to  combine"/></param>
+        /// <returns>The combine <typeparamref name="T"/> object.</returns>
+        public static T CombineInto<T>(params Variant[] targets) where T : Variant
         {
-            for(int i = 0; i < combineTargets.Length; i++)
+            if (targets.Length == 0)
             {
-                @base = (T)CombineVariant(@base, combineTargets[i]);
+                // If we don't have any we can't combine them.
+                return null;
+            }
+
+            if (targets.Length == 1)
+            {
+                // Nothing to combine so we just return the only one. 
+                return (T)targets[0];
+            }
+
+            T @base = (T)targets[0];
+
+            for (int i = 1; i < targets.Length; i++)
+            {
+                @base = (T)CombineVariant(@base, targets[i]);
             }
             return @base;
-        }
-
-        public static T CombineInto<T>(Variant @base, params Variant[] combineTargets) where T : Variant
-        {
-            for (int i = 0; i < combineTargets.Length; i++)
-            {
-                @base = CombineVariant(@base, combineTargets[i]);
-            }
-            return (T)@base;
         }
 
         protected static Variant CombineVariant(Variant startingVariant, Variant combineWith)
@@ -172,6 +168,12 @@ namespace TinyJSON
                 }
             }
             return null;
+        }
+
+
+        public string Dump(EncodeOptions options = EncodeOptions.Default)
+        {
+            return Encoder.Encode(this, options);
         }
 
         public virtual object ToType(Type conversionType, IFormatProvider provider)

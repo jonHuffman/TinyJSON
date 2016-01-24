@@ -14,6 +14,8 @@ TinyJSON is a simple JSON library for C# that strives for ease of use.
 * Polymorphic classes supported with a type hint encoded into the JSON.
 * Optionally encode properties and private fields.
 * Unit tested.
+* Combine Json files
+
 
 ## Usage
 
@@ -388,8 +390,8 @@ Variant ageOverride = JSON.Load("[{\"@index\":1,\"age\":100}]");
 ProxyArray peopleArray = Variant.CombineInto<ProxyArray>(people, nameOverride, ageOverride);
 
 JSON.Dump(peopleArray, EncodeOptions.PrettyPrint);
-
 ```
+
 Will Output:
 ```json
 [{
@@ -402,7 +404,6 @@ Will Output:
 	"age": 100
 }]
 ```
-
 ## Notes
 
 This project was developed with pain elimination and lightweight size in mind. That said, it should be able able to handle reasonable amounts of reasonable data at reasonable speeds.
