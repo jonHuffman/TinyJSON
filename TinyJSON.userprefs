@@ -1,12 +1,13 @@
-﻿<Properties StartupItem="Example/Example.csproj">
+﻿<Properties StartupItem="Example\Example.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="TinyJSON/JSON.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="TinyJSON\JSON.cs">
     <Files>
-      <File FileName="Example/Program.cs" Line="1" Column="1" />
-      <File FileName="UnitTests/TestCollectionTypes.cs" Line="1" Column="1" />
-      <File FileName="TinyJSON/JSON.cs" Line="87" Column="3" />
-      <File FileName="TinyJSON/Encoder.cs" Line="1" Column="1" />
-      <File FileName="UnitTests/TestClassType.cs" Line="1" Column="1" />
+      <File FileName="Example\Program.cs" Line="1" Column="1" />
+      <File FileName="UnitTests\TestCollectionTypes.cs" Line="1" Column="1" />
+      <File FileName="TinyJSON\JSON.cs" Line="87" Column="3" />
+      <File FileName="TinyJSON\Encoder.cs" Line="1" Column="1" />
+      <File FileName="UnitTests\TestClassType.cs" Line="1" Column="1" />
+      <File FileName="TinyJSON\Properties\ResolveUnityRefrences.xml" Line="21" Column="11" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

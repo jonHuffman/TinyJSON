@@ -9,7 +9,8 @@
     <OutputType>Library</OutputType>
     <RootNamespace>TinyJSON</RootNamespace>
     <AssemblyName>TinyJSON</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -52,5 +53,8 @@
     <Compile Include="EncodeOptions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Properties\ResolveUnityRefrences.xml" />
+  </ItemGroup>
+  <Import Project="$(ProjectDir)\Properties\ResolveUnityRefrences.xml"/>
 </Project>

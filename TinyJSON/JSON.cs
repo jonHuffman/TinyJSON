@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
-
+using UnityEngine.Scripting;
 
 namespace TinyJSON
 {
+    [Preserve]
     public static class JSON
     {
         static readonly Type INCLUDE_ATTRIBUTE_TYPE = typeof(IncludeAttribute);
@@ -89,7 +90,7 @@ namespace TinyJSON
             return null;
         }
 
-
+        [Preserve]
         private static T DecodeType<T>(Variant data)
         {
             if (data == null)
@@ -281,12 +282,12 @@ namespace TinyJSON
                             if (type.IsValueType)
                             {
                                 object instanceRef = (object)instance;
-                                propertyInfo.SetValue(instanceRef, MakeMethod.Invoke(obj: null, parameters: new object[] { proxyObject[memberName] }));
+                                propertyInfo.SetValue(instanceRef, MakeMethod.Invoke(obj: null, parameters: new object[] { proxyObject[memberName] }), null);
                                 instance = (T)instanceRef;
                             }
                             else
                             {
-                                propertyInfo.SetValue(instance, MakeMethod.Invoke(obj: null, parameters: new object[] { proxyObject[memberName] }));
+                                propertyInfo.SetValue(instance, MakeMethod.Invoke(obj: null, parameters: new object[] { proxyObject[memberName] }), null);
                             }
 
 
@@ -327,7 +328,7 @@ namespace TinyJSON
             return list;
         }
 
-
+        [Preserve]
         private static Dictionary<K, V> DecodeDictionary<K, V>(Variant data)
         {
             var dict = new Dictionary<K, V>();
@@ -343,7 +344,7 @@ namespace TinyJSON
             return dict;
         }
 
-
+        [Preserve]
         private static T[] DecodeArray<T>(Variant data)
         {
             var arrayData = data as ProxyArray;
@@ -359,7 +360,7 @@ namespace TinyJSON
             return array;
         }
 
-
+        [Preserve]
         private static void DecodeMultiRankArray<T>(ProxyArray arrayData, Array array, int arrayRank, int[] indices)
         {
             var count = arrayData.Count;
@@ -386,7 +387,7 @@ namespace TinyJSON
         private static MethodInfo decodeArrayMethod = typeof(JSON).GetMethod("DecodeArray", staticBindingFlags);
         private static MethodInfo decodeMultiRankArrayMethod = typeof(JSON).GetMethod("DecodeMultiRankArray", staticBindingFlags);
 
-
+        [Preserve]
         public static void SupportTypeForAOT<T>()
         {
             DecodeType<T>(null);
@@ -407,7 +408,7 @@ namespace TinyJSON
             Variant.CombineInto<ProxyArray>(null);
         }
 
-
+        [Preserve]
         private static void SupportValueTypesForAOT()
         {
             SupportTypeForAOT<Int16>();
