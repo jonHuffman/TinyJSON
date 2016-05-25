@@ -163,7 +163,7 @@ When decoding polymorphic types, TinyJSON has no way of knowing which subclass t
 
 ## Encode Options
 
-Four options are currently available for JSON encoding, and can be passed in as a second parameter to `JSON.Dump()`.
+Five options are currently available for JSON encoding, and can be passed in as a second parameter to `JSON.Dump()`.
 
 * `EncodeOptions.PrettyPrint` will output nicely formatted JSON to make it more readable.
 * `EncodeOptions.NoTypeHints` will disable the outputting of type hints into the JSON output. This may be desirable if you plan to read the JSON into another application that might choke on the type information. You can override this on a per-member basis with the `TinyJSON.TypeHint` attribute.
@@ -194,13 +194,13 @@ Four options are currently available for JSON encoding, and can be passed in as 
 		[AfterDecode]
 		public void AfterDecode()
 		{
-			Console.WriteLine("I have been decoded!"});
+			Console.WriteLine("I have been decoded!");
 		}
 
 		[AfterDecode]
 		public void AfterDecodeWithVariant(Variant variant)
 		{
-			Console.WriteLine("I have been decoded!"});
+			Console.WriteLine("I have been decoded!");
 		}
 	}
 ```
