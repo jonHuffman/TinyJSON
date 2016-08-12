@@ -108,6 +108,24 @@ namespace UnitTests
 			Assert.AreEqual( "null", JSON.Dump( null ) );
 		}
 
+		[Test]
+		public void TestDumpChar()
+		{
+			List<char> chars = new List<char>() { 'a', 'b', 'c', 'd' };
+			string result = JSON.Dump(chars);
+			Assert.AreEqual("[\"a\",\"b\",\"c\",\"d\"]", result);
+		}
+
+		[Test]
+		public void TestLoadChar()
+		{
+			string json = "[\"a\",\"b\",\"c\",\"d\"]";
+			List<char> result = JSON.Load(json).Make<List<char>>();
+			Assert.AreEqual('a', result[0]);
+			Assert.AreEqual('b', result[1]);
+			Assert.AreEqual('c', result[2]);
+			Assert.AreEqual('d', result[3]);
+		}
 
 		[Test]
 		public void TestLoadNull()
@@ -134,12 +152,28 @@ namespace UnitTests
 		[Test]
 		public void TestAOTCompatibility()
 		{
+
 			ValueTypes item;
 			var json = "{\"i16\":1,\"u16\":2,\"i32\":3,\"u32\":4,\"i64\":5,\"u64\":6,\"s\":7,\"d\":8,\"m\":9,\"b\":true}";
 			var data = JSON.Load( json );
 
-			Assert.DoesNotThrow( () => data.Make<ValueTypes>() );
-			Assert.DoesNotThrow( () => JSON.MakeInto( data, out item ) );
+			try
+			{
+				data.Make<ValueTypes>();
+			}
+			catch
+			{
+				Assert.Fail("Threw an excepton for a good cast.");
+			}
+
+			try
+			{
+				JSON.MakeInto( data, out item );
+			}
+			catch
+			{
+				Assert.Fail("Threw an excepton for a good cast.");
+			}
 		}
 	}
 }
