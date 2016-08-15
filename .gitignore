@@ -5,6 +5,8 @@
 /UnitTests-iOS/obj/
 /TinyJSON/bin/
 /TinyJSON/obj/
+/TinyJSON_NETCore/bin/
+/TinyJSON_NETCore/obj/
 /Example/bin/
 /Example/obj/
 test-results/

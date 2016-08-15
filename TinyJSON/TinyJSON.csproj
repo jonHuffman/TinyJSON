@@ -38,8 +38,8 @@
     <Compile Include="Attributes\ExcludeAttribute.cs" />
     <Compile Include="Attributes\AfterDecodeAttribute.cs" />
     <Compile Include="Attributes\IncludeAttribute.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Decoder.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Encoder.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="Types\Variant.cs" />
@@ -56,5 +56,5 @@
   <ItemGroup>
     <Content Include="Properties\ResolveUnityRefrences.xml" />
   </ItemGroup>
-  <Import Project="$(ProjectDir)\Properties\ResolveUnityRefrences.xml"/>
+  <Import Project="$(ProjectDir)\Properties\ResolveUnityRefrences.xml" />
 </Project>
