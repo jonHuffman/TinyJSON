@@ -30,8 +30,9 @@
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework">
-      <HintPath>lib\nunit.framework.dll</HintPath>
+    <Reference Include="nunit.framework, Version=3.4.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\NUnit.org\framework\3.4.1.0\net-4.5\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
   </ItemGroup>
@@ -51,7 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TinyJSON\TinyJSON.csproj">
-      <Project>{b7e22dac-a8c9-4e8b-a7f7-f8336836cafd}</Project>
+      <Project>{B7E22DAC-A8C9-4E8B-A7F7-F8336836CAFD}</Project>
       <Name>TinyJSON</Name>
     </ProjectReference>
   </ItemGroup>
