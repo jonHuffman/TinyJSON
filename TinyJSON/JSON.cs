@@ -232,7 +232,11 @@ namespace TinyJSON
 //					if (tInfo.IsAssignableFrom(makeType))
 //#endif
 					{
+#if NETCORE
 						instance = (T)Activator.CreateInstance(makeType, nonPublic: true);
+#else
+						instance = (T)Activator.CreateInstance(makeType);
+#endif
 						type = makeType;
 					}
 					else
@@ -243,8 +247,13 @@ namespace TinyJSON
 			}
 			else
 			{
+#if NETCORE
 				// We don't have a type hint, so just instantiate the type we have.
 				instance = (T)Activator.CreateInstance(typeof(T), nonPublic: true);
+#else
+				// We don't have a type hint, so just instantiate the type we have.
+				instance = (T)Activator.CreateInstance(typeof(T));
+#endif
 			}
 
 			List<MemberInfo> members = new List<MemberInfo>();
