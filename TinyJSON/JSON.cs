@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Linq;
 
 #if !NETCORE
 using UnityEngine.Scripting;
@@ -226,11 +225,8 @@ namespace TinyJSON
 				}
 				else
 				{
-//#if !NETCORE
+
 					if (type.IsAssignableFrom(makeType))
-//#else
-//					if (tInfo.IsAssignableFrom(makeType))
-//#endif
 					{
 #if NETCORE
 						instance = (T)Activator.CreateInstance(makeType, nonPublic: true);

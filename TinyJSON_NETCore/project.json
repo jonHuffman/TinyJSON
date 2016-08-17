@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-*",
+  "version": "1.0.6073-15482",
   "dependencies": {
     "Microsoft.NETCore": "5.0.1"
   },
@@ -9,6 +9,8 @@
     }
   },
   "buildOptions": {
-    "define": [ "NETCORE" ]
+    "define": [ "NETCORE" ],
+	"outputName": "TinyJSON"
   }
+
 }
