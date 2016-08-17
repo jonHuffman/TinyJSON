@@ -228,7 +228,7 @@ namespace TinyJSON
 
 					if (type.IsAssignableFrom(makeType))
 					{
-#if NETCORE
+#if !NETCORE
 						instance = (T)Activator.CreateInstance(makeType, nonPublic: true);
 #else
 						instance = (T)Activator.CreateInstance(makeType);
@@ -243,7 +243,7 @@ namespace TinyJSON
 			}
 			else
 			{
-#if NETCORE
+#if !NETCORE
 				// We don't have a type hint, so just instantiate the type we have.
 				instance = (T)Activator.CreateInstance(typeof(T), nonPublic: true);
 #else
