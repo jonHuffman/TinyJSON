@@ -1,3 +1,4 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/6a2affqakwt5my60/branch/master?svg=true)](https://ci.appveyor.com/project/ByronMayne/tinyjson/branch/master)
 ## Description
 
 TinyJSON is a simple JSON library for C# that strives for ease of use.
