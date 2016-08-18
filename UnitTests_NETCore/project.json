@@ -4,7 +4,7 @@
   "dependencies": {
     "NUnit": "3.4.1",
     "dotnet-test-nunit": "3.4.0-beta-2",
-    "TinyJSON_NETCore": "1.0.0-*"
+    "TinyJSON_NETCore": "1.0.6073-15482"
   },
 
     "testRunner": "nunit",
@@ -19,5 +19,8 @@
                 }
             }
         }
-    }
+    },
+  "compile":[
+	"../UnitTests/*.cs"
+  ]
 }

@@ -179,7 +179,7 @@ public class TestClassType
 
 
     [Test]
-    public void TestLoadStruct()
+    public void TestLoadClass()
     {
         TestClass testClass = JSON.Load("{\"x\":5,\"y\":7,\"z\":3,\"list\":[3,1,4]}}").Make<TestClass>();
 

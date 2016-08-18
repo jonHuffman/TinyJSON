@@ -11,6 +11,10 @@
   "buildOptions": {
     "define": [ "NETCORE" ],
 	"outputName": "TinyJSON"
-  }
-
+  },
+  "compile":[
+	"../TinyJSON/*.cs",
+	"../TinyJSON/Attributes/*.cs",
+	"../TinyJSON/Types/*.cs"
+  ]
 }

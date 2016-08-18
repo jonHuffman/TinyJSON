@@ -7,7 +7,7 @@
   <!-- A property group is a region where you define variables. If assigned multiple times the last one is kept. -->
   <PropertyGroup>
     <!-- These variables are used in our .cspoj MSBuild file -->
-    <UnityVersion>5.3.1f1</UnityVersion>
+    <UnityVersion>5.4.0f3</UnityVersion>
     <UnityPathLibsDir>lib\Unity_$(UnityVersion)\</UnityPathLibsDir>
     <!-- Hint is used for references in MSBuild -->
     <UnityEngineHint>$(UnityPathLibsDir)UnityEngine.dll</UnityEngineHint>
