@@ -1,5 +1,6 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/6a2affqakwt5my60/branch/master?svg=true)](https://ci.appveyor.com/project/ByronMayne/tinyjson/branch/master)
  [ ![Download](https://api.bintray.com/packages/byronmayne/TinyJSON/TinyJSON/images/download.svg) ](https://bintray.com/byronmayne/TinyJSON/TinyJSON/_latestVersion)
+ [![License](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://github.com/ByronMayne/TinyJSON/blob/master/LICENSE.md)
  
 ## Description
 
