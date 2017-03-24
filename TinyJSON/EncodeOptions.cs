@@ -41,6 +41,10 @@ namespace TinyJSON
         /// </summary>
         Combinable = 1 << 5,
 
+        /// <summary>
+        /// By default TinyJSON converts enums to string values. This option will instead have enums converted to integers
+        /// </summary>
+        EnumsAsInts = 1 << 6,
     }
 }
 

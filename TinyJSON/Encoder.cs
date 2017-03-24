@@ -85,6 +85,14 @@ namespace TinyJSON
 			}
 		}
 
+        bool enumsAsInts
+        {
+            get
+            {
+                return ((options & EncodeOptions.EnumsAsInts) == EncodeOptions.EnumsAsInts);
+            }
+        }
+
 
 		void EncodeValue(object value, bool forceTypeHint, int combineIndex)
 		{
@@ -112,7 +120,14 @@ namespace TinyJSON
 				else
 				if (value is Enum)
 				{
-					EncodeString(value.ToString());
+                    if (!enumsAsInts)
+                    {
+                        EncodeString(value.ToString());
+                    }
+                    else
+                    {
+                        EncodeOther((int)value, forceTypeHint, combineIndex);
+                    }
 				}
 				else
 				if ((asArray = value as Array) != null)

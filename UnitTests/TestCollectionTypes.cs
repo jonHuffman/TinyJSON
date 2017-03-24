@@ -209,6 +209,8 @@ public class TestCollectionTypes
     {
         var testEnum = TestEnum.Thing2;
         Assert.AreEqual( "\"Thing2\"", JSON.Dump( testEnum ) );
+        string t = JSON.Dump(testEnum, EncodeOptions.EnumsAsInts);
+        Assert.AreEqual("1", JSON.Dump(testEnum, EncodeOptions.EnumsAsInts));
     }
 
 
