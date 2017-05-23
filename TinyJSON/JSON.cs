@@ -502,10 +502,18 @@ namespace TinyJSON
 			DecodeDictionary<String, T>(null);
 			Variant.CombineInto<ProxyObject>(null);
 			Variant.CombineInto<ProxyArray>(null);
-		}
+        }
 
 #if !NETCORE
-		[Preserve]
+        [Preserve]
+#endif
+        public static void SupportDictionaryForAOT<K, V>()
+        {
+            DecodeDictionary<K, V>(null);
+        }
+
+#if !NETCORE
+        [Preserve]
 #endif
 		private static void SupportValueTypesForAOT()
 		{
