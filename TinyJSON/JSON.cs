@@ -7,6 +7,7 @@ using System.Reflection;
 using UnityEngine.Scripting;
 #endif
 
+
 namespace TinyJSON
 {
 #if !NETCORE
@@ -391,8 +392,10 @@ namespace TinyJSON
 			return instance;
 		}
 
-
-		private static List<T> DecodeList<T>(Variant data)
+#if !NETCORE
+        [Preserve]
+#endif
+        private static List<T> DecodeList<T>(Variant data)
 		{
 			var list = new List<T>();
 

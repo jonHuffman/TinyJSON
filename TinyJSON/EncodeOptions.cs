@@ -45,6 +45,9 @@ namespace TinyJSON
         /// By default TinyJSON converts enums to string values. This option will instead have enums converted to integers
         /// </summary>
         EnumsAsInts = 1 << 6,
+
+
+        IncludePublicProperties = 1 << 7,
     }
 }
 
