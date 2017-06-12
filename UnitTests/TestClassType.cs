@@ -20,25 +20,83 @@ public class TestClassType
         public int z;
 
         public List<int> list;
-
-		public int p1 { get; set; }
-		public int p2 { get; private set; }
-		public int p3 { get; }
-
-
-		public TestClass()
-		{
-			p1 = 1;
-			p2 = 2;
-			p3 = 3;
-		}
+        
+        public int p1 { get; set; }
+        public int p2 { get; private set; }
+        public int p3 { get; }
 
 
-		[AfterDecode]
-		public void AfterDecode()
-		{
-			TestClassType.afterDecodeCallbackFired = true;
-		}
+        public TestClass()
+        {
+            p1 = 1;
+            p2 = 2;
+            p3 = 3;
+        }
+
+
+        [AfterDecode]
+        public void AfterDecode()
+        {
+            TestClassType.afterDecodeCallbackFired = true;
+        }
+
+
+        [BeforeEncode]
+        public void BeforeDecode()
+        {
+            TestClassType.beforeEncodeCallbackFired = true;
+        }
+    }
+
+    class PropertyClass
+    {
+        [Exclude]
+        public int x;
+        public int y;
+
+        [Exclude]
+        public List<int> list;
+
+        private int p4_back;
+
+        [Include]
+        public int p1 { get; set; }
+        [Include]
+        public int p2 { get; private set; }
+        [Include]
+        public int p3 { get; }
+        [Include]
+        public int p4 { get { return p4_back; } }
+
+        [Include]
+        private int p5 { get; set; }
+        [Include]
+        private int p6 { get; }
+
+        public int p7 { get; set; }
+        public int p8 { get; }
+        private int p9 { get; }
+
+
+        public PropertyClass()
+        {
+            p1 = 1;
+            p2 = 2;
+            p3 = 3;
+            p4_back = 4;
+            p5 = 5;
+            p6 = 6;
+            p7 = 7;
+            p8 = 8;
+            p9 = 9;
+        }
+
+
+        [AfterDecode]
+        public void AfterDecode()
+        {
+            TestClassType.afterDecodeCallbackFired = true;
+        }
 
 
         [BeforeEncode]
@@ -77,10 +135,9 @@ public class TestClassType
     {
         [Exclude]
         public int excludedField = 0;
-
+        
         private int m_PrivateField = 0;
-
-        [Exclude]
+        
         private int m_PropertyValue = 0;
 
 
@@ -97,13 +154,6 @@ public class TestClassType
             set { m_PrivateField = value; }
         }
     }
-	[Test]
-	public void TestDumpClassIncludePublicProperties()
-	{
-		var testClass = new TestClass() { x = 5, y = 7, z = 0 };
-		Console.WriteLine( JSON.Dump( testClass, EncodeOptions.NoTypeHints | EncodeOptions.IncludePublicProperties ) );
-		Assert.AreEqual( "{\"x\":5,\"y\":7,\"list\":null,\"p1\":1,\"p2\":2,\"p3\":3}", JSON.Dump( testClass, EncodeOptions.NoTypeHints | EncodeOptions.IncludePublicProperties ) );
-	}
 
 
     [Test]
@@ -117,7 +167,13 @@ public class TestClassType
         Assert.IsTrue(beforeEncodeCallbackFired);
     }
 
-
+    [Test]
+    public void TestDumpClassPropertyClass()
+    {
+        var testClass = new PropertyClass() { x = 5, y = 7 };
+        Console.WriteLine(JSON.Dump(testClass, EncodeOptions.NoTypeHints));
+        Assert.AreEqual("{\"y\":7,\"p1\":1,\"p2\":2,\"p3\":3,\"p4\":4,\"p5\":5,\"p6\":6}", JSON.Dump(testClass, EncodeOptions.NoTypeHints));
+    }
 
     [Test]
     public void TestEncoderOptions()
@@ -125,16 +181,14 @@ public class TestClassType
         AttributeClass aClass = new AttributeClass() { excludedField = 4, propertyValue = 10, privateField = 4 };
 
         //Should only encode the property value 
+        string temp = JSON.Dump(aClass);
         Assert.AreEqual("{\"@type\":\"TestClassType+AttributeClass\",\"propertyValue\":10}", JSON.Dump(aClass));
 
         //Should only encode the field value
         Assert.AreEqual("{\"@type\":\"TestClassType+AttributeClass\",\"excludedField\":4}", JSON.Dump(aClass, EncodeOptions.IgnoreAttributes));
 
         //Should encode excludedField and propertyValue
-        Assert.AreEqual("{\"@type\":\"TestClassType+AttributeClass\",\"m_PrivateField\":4,\"propertyValue\":10}", JSON.Dump(aClass, EncodeOptions.EncodePrivateVariables));
-
-        //Should encode m_PrivateField, excludedField, and m_PropertyValue
-        Assert.AreEqual("{\"@type\":\"TestClassType+AttributeClass\",\"excludedField\":4,\"m_PrivateField\":4,\"m_PropertyValue\":10}", JSON.Dump(aClass, EncodeOptions.IgnoreAttributes | EncodeOptions.EncodePrivateVariables));
+        Assert.AreEqual("{\"@type\":\"TestClassType+AttributeClass\",\"propertyValue\":10}", JSON.Dump(aClass, EncodeOptions.Default));
     }
 
     [Test]

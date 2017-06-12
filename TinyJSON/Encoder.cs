@@ -68,23 +68,6 @@ namespace TinyJSON
 			}
 		}
 
-
-		bool encodePrivateVariables
-		{
-			get
-			{
-				return ((options & EncodeOptions.EncodePrivateVariables) == EncodeOptions.EncodePrivateVariables);
-			}
-        }
-
-        bool includePublicPropertiesEnabled
-        {
-            get
-            {
-                return ((options & EncodeOptions.IncludePublicProperties) == EncodeOptions.IncludePublicProperties);
-            }
-        }
-
         bool combinable
 		{
 			get
@@ -178,8 +161,6 @@ namespace TinyJSON
 
 			forceTypeHint = forceTypeHint || typeHintsEnabled;
 
-			var includePublicProperties = includePublicPropertiesEnabled;
-
 			var firstItem = !forceTypeHint;
 			if (forceTypeHint)
 			{
@@ -219,7 +200,7 @@ namespace TinyJSON
 			for (int i = 0; i < fields.Length; i++)
 			{
 				shouldTypeHint = false;
-				shouldEncode = fields[i].IsPublic || encodePrivateVariables;
+				shouldEncode = fields[i].IsPublic;
 				string fieldName = fields[i].Name;
 
 
@@ -288,7 +269,7 @@ namespace TinyJSON
 					if (properties[i].CanRead)
 					{
                         shouldTypeHint = false;
-                        shouldEncode = includePublicProperties;
+                        shouldEncode = false;
 						string propertyName = properties[i].Name;
 
 #if !NETCORE
