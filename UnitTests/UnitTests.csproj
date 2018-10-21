@@ -37,6 +37,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TestClassWithHashSet.cs" />
     <Compile Include="TestCombining.cs" />
     <Compile Include="TestSimpleTypes.cs" />
     <Compile Include="TestClassType.cs" />

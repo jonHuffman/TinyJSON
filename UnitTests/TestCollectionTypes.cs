@@ -250,6 +250,24 @@ public class TestCollectionTypes
     }
 
     [Test]
+    public void TestDumpHashSet()
+    {
+        const string ELEMENT_1 = "Element1";
+        const string ELEMENT_2 = "Element2";
+        const string ELEMENT_3 = "Element3";
+
+        var hashSet = new HashSet<string>()
+        {
+            ELEMENT_1,
+            ELEMENT_2,
+            ELEMENT_3
+        };
+
+        var json = string.Format("[\"{0}\",\"{1}\",\"{2}\"]", ELEMENT_1, ELEMENT_2, ELEMENT_3);
+        Assert.AreEqual(json, JSON.Dump(hashSet));
+    }
+
+    [Test]
     public void TestLoadHashSet()
     {
         const string ELEMENT_1 = "Element1";
@@ -263,6 +281,24 @@ public class TestCollectionTypes
         Assert.AreEqual(true, hashSet.Contains(ELEMENT_1));
         Assert.AreEqual(true, hashSet.Contains(ELEMENT_2));
         Assert.AreEqual(true, hashSet.Contains(ELEMENT_3));
+    }
+
+    [Test]
+    public void TestDumpHashSetWithEnumKeys()
+    {
+        const TestEnum ELEMENT_1 = TestEnum.Thing1;
+        const TestEnum ELEMENT_2 = TestEnum.Thing2;
+        const TestEnum ELEMENT_3 = TestEnum.Thing3;
+
+        var hashSet = new HashSet<TestEnum>()
+        {
+            ELEMENT_1,
+            ELEMENT_2,
+            ELEMENT_3
+        };
+
+        var json = string.Format("[\"{0}\",\"{1}\",\"{2}\"]", ELEMENT_1, ELEMENT_2, ELEMENT_3);
+        Assert.AreEqual(json, JSON.Dump(hashSet));
     }
 
     [Test]
