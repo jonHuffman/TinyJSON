@@ -207,6 +207,13 @@ namespace TinyJSON
 //			}
 //#endif
 
+			//we need to handle HashSet's differently because there does not exist a nongeneric interface for them
+			if(data is ProxyArray && (data as ProxyArray).Count > 0)
+			{
+				var makeFunc = decodeHashSetMethod.MakeGenericMethod(type.GetGenericArguments());
+				return (T)makeFunc.Invoke(null, new object[] { data });
+			}
+
 			// At this point we should be dealing with a class or struct.
 			T instance;
 			var proxyObject = data as ProxyObject;
@@ -447,6 +454,22 @@ namespace TinyJSON
 			return array;
 		}
 
+		#if !NETCORE
+		[Preserve]
+#endif
+		private static HashSet<T> DecodeHashSet<T>(Variant data)
+		{
+			var arrayData = data as ProxyArray;
+			var arraySize = arrayData.Count;
+			var hashSet = new HashSet<T>();
+			foreach (var item in data as ProxyArray)
+			{
+				var typedItem = item.Make<T>();
+				hashSet.Add(typedItem);
+			}
+			return hashSet;
+		}
+
 #if !NETCORE
 		[Preserve]
 #endif
@@ -467,13 +490,13 @@ namespace TinyJSON
 			}
 		}
 
-
 		private static BindingFlags instanceBindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 		private static BindingFlags staticBindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
 //#if !NETCORE
 		private static MethodInfo decodeTypeMethod				= typeof(JSON).GetMethod("DecodeType", staticBindingFlags);
 		private static MethodInfo decodeListMethod				= typeof(JSON).GetMethod("DecodeList", staticBindingFlags);
 		private static MethodInfo decodeDictionaryMethod		= typeof(JSON).GetMethod("DecodeDictionary", staticBindingFlags);
+		private static MethodInfo decodeHashSetMethod			= typeof(JSON).GetMethod("DecodeHashSet", staticBindingFlags);
 		private static MethodInfo decodeArrayMethod				= typeof(JSON).GetMethod("DecodeArray", staticBindingFlags);
 		private static MethodInfo decodeMultiRankArrayMethod	= typeof(JSON).GetMethod("DecodeMultiRankArray", staticBindingFlags);
 //#else
@@ -503,6 +526,7 @@ namespace TinyJSON
 			DecodeDictionary<Decimal, T>(null);
 			DecodeDictionary<Boolean, T>(null);
 			DecodeDictionary<String, T>(null);
+			DecodeHashSet<T>(null);
 			Variant.CombineInto<ProxyObject>(null);
 			Variant.CombineInto<ProxyArray>(null);
         }

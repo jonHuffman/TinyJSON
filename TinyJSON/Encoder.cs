@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 
@@ -146,12 +147,25 @@ namespace TinyJSON
 					EncodeValue(asVariant.value, forceTypeHint, combineIndex);
 				}
 				else
+				if (IsHashSet(value))
+				{
+					EncodeHashSet(value, forceTypeHint);
+				}
+				else
 				{
 					EncodeOther(value, forceTypeHint, combineIndex);
 				}
 			}
 		}
 
+		bool IsHashSet(object value)
+		{
+			Type hashSetType = typeof(HashSet<>);
+			Type valueType = value.GetType();
+			//do not use the full name as the instantiated hashset will be longer
+			int comparison = string.Compare(hashSetType.Name, valueType.Name);
+			return comparison == 0;
+		}
 
 		void EncodeObject(object value, bool forceTypeHint, int combineIndex)
 		{
@@ -472,6 +486,22 @@ namespace TinyJSON
 			builder.Append('\"');
 		}
 
+		void EncodeHashSet(object value, bool forceTypeHint)
+		{
+			Type setType = value.GetType();
+			Type[] parameterTypes = setType.GetGenericArguments();
+
+			Type listType = typeof(List<>);
+			var genericListType = listType.MakeGenericType(parameterTypes);
+			var list = Activator.CreateInstance(genericListType) as IList;
+
+			var enumerable = value as IEnumerable;
+			foreach (var item in enumerable)
+			{
+				list.Add(item);
+			}
+			EncodeList(list, forceTypeHint);
+		}
 
 		void EncodeOther(object value, bool forceTypeHint, int combineIndex)
 		{
